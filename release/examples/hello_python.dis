@@ -1,0 +1,22 @@
+// Hello World in Python-style Displexity
+print("Hello, World!")
+
+// Variables and types
+name = input("What's your name? ")
+age = int(input("How old are you? "))
+
+print("Hello " + name + ", you are " + str(age) + " years old!")
+
+// Simple graphics
+window("Python Game", 800, 600)
+opengl()
+projection_2d()
+
+for (frame = 0; frame < 100; frame++) {
+    clear()
+    color(1.0, 0.0, 0.0)  // Red
+    rect(100 + frame * 2, 200, 50, 50)
+    render()
+}
+
+print("Demo complete!")

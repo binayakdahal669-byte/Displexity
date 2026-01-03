@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 17:29:59
+Input: test_basic.dis
+Output: test_basic.exe
+Mode: c
+Tokens: 138
+Syntax error at line 10: Expected expression
+Status: Error
+Error: Syntax errors found

@@ -1,0 +1,34 @@
+// DISP Bare Assembly Demo
+function boot_message() {
+    // This will be compiled to bare assembly
+    print("DISP OS Booting...");
+    return 0;
+}
+
+function hardware_init() {
+    // Direct hardware initialization
+    print("Initializing hardware...");
+    return 0;
+}
+
+function main() {
+    // Boot sequence
+    boot_message();
+    hardware_init();
+    
+    // Main OS loop
+    running = 1;
+    while (running) {
+        // Handle hardware interrupts
+        key = get_keypress();
+        
+        if (key == 27) {  // ESC to shutdown
+            print("Shutting down...");
+            running = 0;
+        } else {
+            print("Key received in OS");
+        }
+    }
+    
+    return 0;
+}

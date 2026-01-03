@@ -1,0 +1,7 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:02:32
+Input: simple_test.dis
+Output: simple_debug2.c
+Mode: c
+Tokens: 5
+Status: Success

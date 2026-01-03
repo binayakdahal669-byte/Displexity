@@ -1,0 +1,6 @@
+// Input example in DISP
+print "What is your name?"
+input name
+
+print "Hello, "
+print name

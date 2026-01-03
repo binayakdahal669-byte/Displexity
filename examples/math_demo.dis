@@ -1,0 +1,42 @@
+// math_demo.dis - Demo using math and io libraries
+include "lib/math.dish"
+include "lib/math.disll"
+include "lib/io.dish"
+include "lib/io.disll"
+
+// Main program
+print("=== Math Library Demo ===\n");
+
+// Test abs
+int x = -42;
+int result = abs(x);
+print("abs(-42) = " << result << "\n");
+
+// Test max/min
+int a = 10;
+int b = 25;
+print("max(10, 25) = " << max(a, b) << "\n");
+print("min(10, 25) = " << min(a, b) << "\n");
+
+// Test pow
+print("pow(2, 8) = " << pow(2, 8) << "\n");
+print("pow(3, 4) = " << pow(3, 4) << "\n");
+
+// Test factorial
+print("factorial(5) = " << factorial(5) << "\n");
+print("factorial(7) = " << factorial(7) << "\n");
+
+// Test fibonacci
+print("\nFibonacci sequence:\n");
+for i = 0 to 10 {
+    print("fib(" << i << ") = " << fib(i) << "\n");
+}
+
+// Test I/O utilities
+print("\n=== I/O Demo ===\n");
+int num = 255;
+print("Number 255 in different bases:\n");
+printhex(num);
+printbin(num);
+
+print("\nDone!\n");

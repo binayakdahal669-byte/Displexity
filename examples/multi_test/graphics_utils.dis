@@ -1,0 +1,9 @@
+// Graphics utilities
+func test_graphics() {
+    print("Testing graphics...\n");
+    window_create("Multi-File Graphics", 200, 200);
+    gl_init();
+    clear();
+    render();
+    print("Graphics test done!\n");
+}

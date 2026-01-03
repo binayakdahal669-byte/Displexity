@@ -1,0 +1,5 @@
+// Example 2: Variables and arithmetic
+x = 10;
+y = 20;
+z = x + y;
+print "Math result"

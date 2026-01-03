@@ -1,0 +1,8 @@
+// Multi-file test main
+print("=== Multi-File Test ===\n");
+
+// Call functions from other files
+test_math();
+test_graphics();
+
+print("Multi-file test complete!\n");

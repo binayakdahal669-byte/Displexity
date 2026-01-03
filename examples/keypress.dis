@@ -1,0 +1,19 @@
+// Keypress Demo (.dis source file)
+function main() {
+    print("Press any key (ESC to exit):");
+    
+    running = 1;
+    while (running) {
+        key = get_keypress();
+        
+        if (key == 27) {  // ESC
+            print("Goodbye!");
+            running = 0;
+        } else {
+            print("Key pressed:");
+            print(key);
+        }
+    }
+    
+    return 0;
+}

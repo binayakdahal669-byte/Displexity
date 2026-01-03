@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 16:02:41
+Input: examples\hello_python.dis
+Output: test_python.exe
+Mode: c
+Tokens: 97
+Syntax error at line 5: Expected expression
+Status: Error
+Error: Syntax errors found

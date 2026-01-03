@@ -1,0 +1,8 @@
+build/
+*.o
+*.exe
+*.c
+*.log
+*.disp
+*.img
+*.iso

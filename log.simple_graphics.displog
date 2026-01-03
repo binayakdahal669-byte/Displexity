@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 08:57:07
+Input: examples\simple_graphics.dis
+Output: simple_graphics.exe
+Mode: c
+Tokens: 61
+Temp C file: simple_graphics_temp.c
+GCC succeeded: simple_graphics.exe
+Status: Success

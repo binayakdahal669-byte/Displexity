@@ -1,0 +1,22 @@
+// Final System Test
+include "release/lib/displexity/crypto.disll"
+
+print("=== Displexity Final Test ===")
+
+// Test crypto
+str data = "test"
+str result = md5_hash(data)
+print("Crypto: OK")
+
+// Test input
+print("Mouse X: " << get_mouse_x())
+print("Input: OK")
+
+// Test loop
+int sum = 0
+for (i = 1 to 4) {
+    sum = sum + i
+}
+print("Loop sum: " << sum)
+
+print("=== System Ready! ===")

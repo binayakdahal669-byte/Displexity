@@ -1,0 +1,47 @@
+// Enemy system
+
+// Enemy positions
+float enemy1_x = 100.0;
+float enemy1_y = 100.0;
+float enemy2_x = 600.0;
+float enemy2_y = 400.0;
+float enemy3_x = 300.0;
+float enemy3_y = 200.0;
+
+func init_enemies() {
+    enemy1_x = 100.0;
+    enemy1_y = 100.0;
+    enemy2_x = 600.0;
+    enemy2_y = 400.0;
+    enemy3_x = 300.0;
+    enemy3_y = 200.0;
+    print("Enemies initialized\n");
+}
+
+func update_enemies() {
+    // Move enemies in patterns
+    enemy1_x = enemy1_x + 3.0;
+    if (enemy1_x > 800) { enemy1_x = -30; }
+    
+    enemy2_y = enemy2_y - 2.0;
+    if (enemy2_y < -30) { enemy2_y = 630; }
+    
+    // Circular movement for enemy3
+    enemy3_x = 400.0 + 150.0 * cos(enemy1_x * 0.02);
+    enemy3_y = 300.0 + 100.0 * sin(enemy1_x * 0.02);
+}
+
+func render_enemies() {
+    // Draw enemy1 as red square
+    set_color(1.0, 0.0, 0.0);
+    fill_rect(enemy1_x, enemy1_y, 25, 25);
+    
+    // Draw enemy2 as orange triangle
+    set_color(1.0, 0.5, 0.0);
+    draw_triangle(enemy2_x, enemy2_y, enemy2_x - 15, enemy2_y + 20, enemy2_x + 15, enemy2_y + 20);
+    
+    // Draw enemy3 as purple diamond
+    set_color(0.8, 0.0, 0.8);
+    draw_triangle(enemy3_x, enemy3_y - 12, enemy3_x - 12, enemy3_y, enemy3_x + 12, enemy3_y);
+    draw_triangle(enemy3_x, enemy3_y + 12, enemy3_x - 12, enemy3_y, enemy3_x + 12, enemy3_y);
+}

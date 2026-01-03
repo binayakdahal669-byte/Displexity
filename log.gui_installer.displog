@@ -1,0 +1,11 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:21:07
+Input: gui_installer.dis
+Output: gui_installer.exe
+Mode: c
+Tokens: 1
+Temp C file: gui_installer_temp.c
+Using default exe.ico for executable icon
+Icon resource compiled successfully
+GCC succeeded: gui_installer.exe
+Status: Success

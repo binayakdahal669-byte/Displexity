@@ -1,0 +1,13 @@
+; DISP Generated Code
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+void main() {
+    char message[] = {"H", "e", "l", "l", "o", ",", " ", "D", "I", "S", "P", " ", "W", "o", "r", "l", "d", "!"};
+    return 0.000000;
+}
+
+    return 0;
+}

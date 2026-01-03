@@ -1,0 +1,23 @@
+// Graphics Demo (.dis source file)
+function main() {
+    print("DISP Graphics Demo");
+    
+    // Initialize graphics
+    clear();
+    
+    // Render loop
+    frame = 0;
+    while (frame < 100) {
+        clear();
+        render();
+        
+        frame = frame + 1;
+        
+        if (frame == 50) {
+            print("Halfway through animation");
+        }
+    }
+    
+    print("Graphics demo complete");
+    return 0;
+}

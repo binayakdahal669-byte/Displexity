@@ -1,0 +1,32 @@
+// DISP AI Integration Demo
+function main() {
+    print("DISP AI Demo");
+    
+    // Initialize AI system
+    ai_init("gpt-4", "your-api-key", "https://api.openai.com/v1/chat/completions");
+    
+    // Query AI
+    response = ai_query("What is the meaning of life?");
+    print("AI Response:");
+    print(response);
+    
+    // Generate code with AI
+    code_description = "Create a function that calculates fibonacci numbers";
+    generated_code = ai_generate_code(code_description);
+    print("Generated Code:");
+    print(generated_code);
+    
+    // Translate existing code
+    disp_code = "function hello() { print(\"Hello\"); }";
+    c_code = translate_to_c(disp_code);
+    python_code = translate_to_python(disp_code);
+    
+    print("Original DISP:");
+    print(disp_code);
+    print("Translated to C:");
+    print(c_code);
+    print("Translated to Python:");
+    print(python_code);
+    
+    return 0;
+}

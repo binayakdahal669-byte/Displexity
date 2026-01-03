@@ -1,0 +1,6 @@
+// Example 7: Input handling and hotkeys
+include "graphics";
+
+print "Input demo - press keys";
+// Would monitor keyboard input and hotkeys
+print "Input demo - press keys"

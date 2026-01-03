@@ -1,0 +1,7 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 08:35:08
+Input: test_no_lib.dis
+Output: test_no_lib.c
+Mode: c
+Tokens: 44
+Status: Success

@@ -1,0 +1,8 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 07:44:25
+Input: examples\new_syntax.dis
+Output: new_syntax.wat
+Mode: wasm
+Tokens: 62
+WebAssembly emitted: new_syntax.wat
+Status: Success

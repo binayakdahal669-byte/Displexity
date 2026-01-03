@@ -1,0 +1,72 @@
+; DISP Generated Code
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef _WIN32
+#include <conio.h>
+#else
+#include <termios.h>
+#endif
+int get_keypress() {
+    #ifdef _WIN32
+        return _getch();
+    #else
+        return getchar();
+    #endif
+}
+
+char* keypress_to_string(int key) {
+    static char buffer[2] = {0, 0};
+    buffer[0] = (char)key;
+    return buffer;
+}
+
+typedef struct {
+    int key;
+    void (*handler)();
+} hotkey_t;
+
+hotkey_t hotkeys[256];
+int hotkey_count = 0;
+
+void register_hotkey(int key, void (*handler)()) {
+    hotkeys[hotkey_count].key = key;
+    hotkeys[hotkey_count].handler = handler;
+    hotkey_count++;
+}
+
+void process_hotkeys() {
+    int key = get_keypress();
+    for (int i = 0; i < hotkey_count; i++) {
+        if (hotkeys[i].key == key) {
+            hotkeys[i].handler();
+            break;
+        }
+    }
+}
+
+int main() {
+void handle_escape() {
+    return 0.000000;
+}
+
+void handle_enter() {
+    return 0.000000;
+}
+
+void main() {
+    running = 1.000000;
+    while (running) {
+    key = get_keypress();
+    if ((key == 27.000000)) {
+    running = 0.000000;
+    } else {
+    key_str = keypress_to_string(key);
+    }
+    }
+    return 0.000000;
+}
+
+    return 0;
+}

@@ -1,0 +1,13 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 17:42:16
+Input: test_all_features.dis
+Output: test_with_icon.exe
+Mode: c
+Verbose: true
+Tokens: 169
+Temp C file: test_with_icon_temp.c
+Using default exe.ico for executable icon
+Icon resource compiled successfully
+GCC command: gcc test_with_icon_temp.c -o test_with_icon.exe test_with_icon_res.o -lgdi32 -luser32 -lopengl32 -lgdi32 -luser32
+GCC succeeded: test_with_icon.exe
+Status: Success

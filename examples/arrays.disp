@@ -1,0 +1,14 @@
+// Array manipulation in DISP
+function main() {
+    // String to array conversion
+    Array[] word = "array";
+    print(word[0]); // prints "a"
+    print(word[1]); // prints "r"
+    
+    // Manual array creation
+    Array[] numbers = [1, 2, 3, 4, 5];
+    print(numbers[0]); // prints 1
+    print(numbers[4]); // prints 5
+    
+    return 0;
+}

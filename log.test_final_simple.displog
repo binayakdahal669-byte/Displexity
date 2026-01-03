@@ -1,0 +1,8 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-03 08:40:18
+Input: E:\ascs\test_final_simple.dis
+Error loading library release/lib/displexity/crypto.disll: Corrupted .disll file - checksum mismatch
+Output: test_final_simple.c
+Mode: c
+Tokens: 70
+Status: Success

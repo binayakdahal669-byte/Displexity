@@ -1,0 +1,65 @@
+// Displexity Cryptography Library Header
+// Encryption, hashing, and security functions
+
+// Hash functions
+def md5_hash(str data) -> str
+def sha1_hash(str data) -> str
+def sha256_hash(str data) -> str
+def sha512_hash(str data) -> str
+def hmac_sha256(str data, str secret_key) -> str
+
+// Password hashing
+def bcrypt_hash(str password, int rounds) -> str
+def bcrypt_verify(str password, str hash) -> bool
+
+// Random generation
+def generate_random_bytes(int count) -> str
+def generate_random_string(int length) -> str
+def generate_uuid() -> str
+def secure_random_int(int min_val, int max_val) -> int
+
+// Symmetric encryption (AES)
+def aes_encrypt(str plaintext, str secret_key, str iv) -> str
+def aes_decrypt(str ciphertext, str secret_key, str iv) -> str
+
+// Asymmetric encryption (RSA)
+def rsa_generate_public_key(int key_size) -> str
+def rsa_generate_private_key(int key_size) -> str
+def rsa_encrypt(str plaintext, str public_key) -> str
+def rsa_decrypt(str ciphertext, str private_key) -> str
+def rsa_sign(str data, str private_key) -> str
+def rsa_verify(str data, str signature, str public_key) -> bool
+
+// Elliptic Curve Digital Signature Algorithm
+def ecdsa_generate_public_key() -> str
+def ecdsa_generate_private_key() -> str
+def ecdsa_sign(str data, str private_key) -> str
+def ecdsa_verify(str data, str signature, str public_key) -> bool
+
+// Key derivation functions
+def pbkdf2(str password, str salt, int iterations, int key_length) -> str
+def scrypt(str password, str salt, int n, int r, int p, int key_length) -> str
+def argon2(str password, str salt, int time_cost, int memory_cost, int parallelism) -> str
+
+// Security utilities
+def constant_time_compare(str a, str b) -> bool
+
+// Encoding functions
+def base32_encode(str data) -> str
+def base32_decode(str encoded) -> str
+def hex_encode(str data) -> str
+def hex_decode(str encoded) -> str
+
+// Checksums
+def crc32_checksum(str data) -> int
+
+// Key sizes (bits)
+int RSA_1024 = 1024
+int RSA_2048 = 2048
+int RSA_4096 = 4096
+
+// Hash algorithm identifiers
+int HASH_MD5 = 1
+int HASH_SHA1 = 2
+int HASH_SHA256 = 3
+int HASH_SHA512 = 4

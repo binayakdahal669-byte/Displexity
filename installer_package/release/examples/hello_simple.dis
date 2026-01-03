@@ -1,0 +1,16 @@
+print("Hello, World!")
+
+name = input("What's your name? ")
+print("Hello " + name + "!")
+
+window("Test", 400, 300)
+opengl()
+projection_2d()
+
+for i in range(50):
+    clear()
+    color(1.0, 0.0, 0.0)
+    rect(100 + i, 100, 50, 50)
+    render()
+
+print("Done!")

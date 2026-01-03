@@ -1,0 +1,27 @@
+// Complete input system test
+print("=== Complete Input System Test ===")
+
+print("Testing keyboard input...")
+print("Press SPACE key (then any key to continue)")
+while (!is_key_pressed(32)) {
+    // Wait for space key
+}
+print("SPACE key detected!")
+
+print("Testing mouse input...")
+print("Mouse position: " << get_mouse_x() << ", " << get_mouse_y())
+
+if (is_mouse_pressed(0)) {
+    print("Left mouse button is pressed!")
+} else {
+    print("Left mouse button is not pressed")
+}
+
+print("Testing key constants...")
+if (is_key_pressed(27)) {
+    print("ESC key is pressed!")
+} else {
+    print("ESC key is not pressed")
+}
+
+print("=== Input test complete ===")

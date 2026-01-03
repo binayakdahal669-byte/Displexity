@@ -1,0 +1,17 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 08:43:03
+Input: examples\use_math_lib.dis
+Included: examples\lib/math.dish
+Loaded library: examples\lib/math.disll (6 functions)
+  - abs()
+  - max()
+  - min()
+  - power()
+  - factorial()
+  - fib()
+Output: test_final.exe
+Mode: c
+Tokens: 149
+Temp C file: test_final_temp.c
+GCC succeeded: test_final.exe
+Status: Success

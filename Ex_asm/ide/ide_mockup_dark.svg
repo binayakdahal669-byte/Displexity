@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#0f1720}
+      .panel{fill:#0b1220;stroke:#17202b;stroke-width:1}
+      .sidebar{fill:#0d1620}
+      .editor{fill:#0e1622}
+      .tab{fill:#0f2a3a}
+      .text{fill:#cbd5e1;font-family:Arial,Helvetica,sans-serif;font-size:14px}
+      .muted{fill:#7f8b98;font-size:12px}
+      .accent{fill:#3dd6a0}
+      .terminal{fill:#071216}
+      .button{fill:#172a36}
+      .icon{fill:#9fb7c9}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+
+  <!-- Top menu bar -->
+  <rect x="0" y="0" width="1600" height="36" class="panel"/>
+  <text x="12" y="24" class="text">File  Edit  Selection  View  Go  Run  Terminal  Help</text>
+
+  <!-- Left sidebar (explorer) -->
+  <rect x="8" y="44" width="260" height="700" class="sidebar" rx="6"/>
+  <text x="22" y="72" class="text">EX_ASM</text>
+  <rect x="20" y="86" width="220" height="2" fill="#17202b"/>
+  <text x="26" y="118" class="muted">build/</text>
+  <text x="26" y="140" class="text">examples/</text>
+  <text x="26" y="162" class="text">compiler/</text>
+  <text x="26" y="184" class="text">runtime/</text>
+  <text x="26" y="206" class="text">tools/</text>
+
+  <!-- Center editor area -->
+  <rect x="280" y="44" width="992" height="580" class="editor" rx="6"/>
+  <!-- Tabs -->
+  <rect x="280" y="44" width="260" height="28" class="tab"/>
+  <text x="292" y="64" class="text">disp.cpp</text>
+  <rect x="540" y="44" width="260" height="28" class="tab"/>
+  <text x="552" y="64" class="muted">asmgen.h</text>
+  <rect x="800" y="44" width="260" height="28" class="tab"/>
+  <text x="812" y="64" class="muted">ide/main.cpp</text>
+
+  <!-- Editor mock lines -->
+  <g transform="translate(300,80)">
+    <rect x="0" y="0" width="920" height="520" fill="#08121a" rx="4"/>
+    <!-- gutter -->
+    <rect x="0" y="0" width="48" height="520" fill="#081a24"/>
+    <text x="8" y="18" class="muted">1</text>
+    <text x="8" y="34" class="muted">2</text>
+    <text x="8" y="50" class="muted">3</text>
+    <!-- code lines -->
+    <text x="64" y="18" class="text">#include &lt;iostream&gt;</text>
+    <text x="64" y="40" class="text">#include &lt;vector&gt;</text>
+    <text x="64" y="62" class="text">int main() {</text>
+    <text x="84" y="86" class="text">std::cout &lt;&lt; "Hello, Displexity!" &lt;&lt; std::endl;</text>
+    <text x="64" y="110" class="text">}</text>
+  </g>
+
+  <!-- Right sidebar (inspector) -->
+  <rect x="1284" y="44" width="308" height="520" class="sidebar" rx="6"/>
+  <text x="1298" y="72" class="text">Outline</text>
+  <rect x="1298" y="86" width="260" height="2" fill="#17202b"/>
+  <text x="1298" y="112" class="muted">main()</text>
+  <text x="1298" y="132" class="muted">BiosGenerator</text>
+  <text x="1298" y="152" class="muted">AsmGenerator</text>
+
+  <!-- Bottom terminal -->
+  <rect x="8" y="754" width="1584" height="132" class="terminal" rx="6"/>
+  <text x="24" y="782" class="text">PS E:\\Ex_asm&gt; disp examples/hello.dis -emit-exe -o hello.exe</text>
+  <text x="24" y="804" class="muted">Compiled: examples/hello.dis -&gt; hello.exe</text>
+  <text x="24" y="826" class="muted">Log: log.hello.displog</text>
+
+  <!-- Toolbar (floating) -->
+  <rect x="300" y="10" width="380" height="26" rx="6" class="button"/>
+  <text x="310" y="28" class="text">Run  Build  Debug  Git</text>
+
+  <!-- Status bar -->
+  <rect x="0" y="896" width="1600" height="4" fill="#07121a"/>
+</svg>

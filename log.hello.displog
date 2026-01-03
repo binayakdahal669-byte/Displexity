@@ -1,0 +1,11 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 17:43:49
+Input: release\examples\hello.dis
+Output: release\test_packaged.exe
+Mode: c
+Tokens: 5
+Temp C file: release\test_packaged_temp.c
+Using default exe.ico for executable icon
+Icon resource compiled successfully
+GCC succeeded: release\test_packaged.exe
+Status: Success

@@ -1,0 +1,8 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:10:47
+Input: lib_sources\crypto_simple.dis
+Output: release\lib\displexity\crypto.disll
+Mode: lib
+Tokens: 97
+Library created: release\lib\displexity\crypto.disll
+Status: Success

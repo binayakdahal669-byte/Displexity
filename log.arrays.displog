@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 08:00:31
+Input: examples\arrays.dis
+Output: test.exe
+Mode: c
+Tokens: 26
+Temp C file: test_temp.c
+GCC succeeded: test.exe
+Status: Success

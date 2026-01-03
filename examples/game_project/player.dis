@@ -1,0 +1,38 @@
+// Player system
+
+// Player state
+float player_x = 400.0;
+float player_y = 300.0;
+float player_vx = 0.0;
+float player_vy = 0.0;
+
+func init_player() {
+    player_x = 400.0;
+    player_y = 300.0;
+    player_vx = 2.0;
+    player_vy = 1.5;
+    print("Player initialized\n");
+}
+
+func update_player() {
+    // Simple bouncing movement
+    player_x = player_x + player_vx;
+    player_y = player_y + player_vy;
+    
+    // Bounce off walls
+    if (player_x < 20 || player_x > 780) {
+        player_vx = 0 - player_vx;
+    }
+    if (player_y < 20 || player_y > 580) {
+        player_vy = 0 - player_vy;
+    }
+}
+
+func render_player() {
+    // Draw player as a blue circle with white outline
+    set_color(0.0, 0.5, 1.0);
+    fill_circle(player_x, player_y, 15);
+    
+    set_color(1.0, 1.0, 1.0);
+    draw_circle(player_x, player_y, 15);
+}

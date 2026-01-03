@@ -1,0 +1,10 @@
+// math.dish - Math library header for Displexity
+// Include this to declare math functions, then link with math.disll
+
+// Function declarations (signatures only)
+// int abs(int x)       - absolute value
+// int max(int a, int b) - maximum of two values  
+// int min(int a, int b) - minimum of two values
+// int power(int base, int exp) - power function
+// int factorial(int n) - factorial
+// int fib(int n)       - fibonacci number

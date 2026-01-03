@@ -1,0 +1,49 @@
+// Math Library Implementation
+def abs(float x) {
+    if (x < 0.0) {
+        return -x
+    }
+    return x
+}
+
+def min(float a, float b) {
+    if (a < b) {
+        return a
+    }
+    return b
+}
+
+def max(float a, float b) {
+    if (a > b) {
+        return a
+    }
+    return b
+}
+
+def sqrt(float x) {
+    if (x <= 0.0) {
+        return 0.0
+    }
+    
+    float guess = x / 2.0
+    for (i = 0 to 10) {
+        float new_guess = (guess + x / guess) / 2.0
+        guess = new_guess
+    }
+    return guess
+}
+
+def sin(float x) {
+    // Simple approximation
+    float result = x
+    float x3 = x * x * x
+    result = result - (x3 / 6.0)
+    return result
+}
+
+def cos(float x) {
+    float result = 1.0
+    float x2 = x * x
+    result = result - (x2 / 2.0)
+    return result
+}

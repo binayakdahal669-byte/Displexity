@@ -1,0 +1,48 @@
+// Displexity Math Library Header
+// Mathematical functions and utilities
+
+// Basic math functions
+def abs(float x) -> float
+def min(float a, float b) -> float  
+def max(float a, float b) -> float
+def clamp(float value, float min_val, float max_val) -> float
+
+// Advanced math
+def sqrt(float x) -> float
+def pow(float base, float exponent) -> float
+def floor(float x) -> float
+def ceil(float x) -> float
+def round(float x) -> float
+
+// Trigonometric functions
+def sin(float radians) -> float
+def cos(float radians) -> float
+def tan(float radians) -> float
+def asin(float x) -> float
+def acos(float x) -> float
+def atan(float x) -> float
+def atan2(float y, float x) -> float
+
+// Utility functions
+def degrees_to_radians(float degrees) -> float
+def radians_to_degrees(float radians) -> float
+def lerp(float a, float b, float t) -> float
+
+// Vector math
+def vec2_length(float x, float y) -> float
+def vec2_normalize(float x, float y) -> float, float
+def vec2_dot(float x1, float y1, float x2, float y2) -> float
+def vec3_length(float x, float y, float z) -> float
+def vec3_normalize(float x, float y, float z) -> float, float, float
+def vec3_cross(float x1, float y1, float z1, float x2, float y2, float z2) -> float, float, float
+
+// Random number generation
+def random() -> float
+def random_range(float min_val, float max_val) -> float
+def random_int(int min_val, int max_val) -> int
+def set_random_seed(int seed)
+
+// Constants
+float PI = 3.14159265359
+float PI_2 = 1.57079632679
+float E = 2.71828182846

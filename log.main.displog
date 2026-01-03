@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 08:57:37
+Input: examples\multi_test\main.dis
+Output: multi_test.exe
+Mode: c
+Tokens: 93
+Temp C file: multi_test_temp.c
+GCC succeeded: multi_test.exe
+Status: Success

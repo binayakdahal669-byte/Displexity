@@ -1,0 +1,12 @@
+// HTTP requests in DISP
+function main() {
+    // Make HTTP GET request
+    http "https://api.github.com" "GET" response;
+    print(response);
+    
+    // Make HTTP POST request
+    http "https://httpbin.org/post" "POST" postResponse;
+    print(postResponse);
+    
+    return 0;
+}

@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-01 22:32:06
+Input: examples/hello.dis
+Output: hello.exe
+Mode: exe
+Tokens: 3
+Temp C file: hello_temp.c
+GCC succeeded: hello.exe
+Status: Success

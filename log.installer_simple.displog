@@ -1,0 +1,11 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:21:09
+Input: installer_simple.dis
+Output: installer_simple.exe
+Mode: c
+Tokens: 453
+Temp C file: installer_simple_temp.c
+Using default exe.ico for executable icon
+Icon resource compiled successfully
+GCC succeeded: installer_simple.exe
+Status: Success

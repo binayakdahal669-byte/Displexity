@@ -1,0 +1,15 @@
+// AI Integration Demo (.dis source file)
+function main() {
+    print("DISP AI Demo");
+    
+    // Query AI
+    prompt = "What is 2 + 2?";
+    response = ai_query(prompt);
+    
+    print("Question:");
+    print(prompt);
+    print("AI Answer:");
+    print(response);
+    
+    return 0;
+}

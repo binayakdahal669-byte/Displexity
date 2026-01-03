@@ -1,0 +1,31 @@
+// Game Engine - Core functionality
+
+func init_engine(str title, int width, int height) {
+    window_create(title, width, height);
+    gl_init();
+    set_projection_2d();
+    set_clear_color(0.1, 0.2, 0.3, 1.0);
+    print("Engine initialized: " << title << "\n");
+}
+
+func start_frame() {
+    clear();
+}
+
+func end_frame() {
+    render();
+}
+
+func draw_background() {
+    // Draw a simple gradient background
+    set_color(0.2, 0.2, 0.4);
+    fill_rect(0, 0, 800, 600);
+    
+    // Draw stars
+    set_color(1.0, 1.0, 1.0);
+    for (i = 0 to 50) {
+        int star_x = (i * 37) % 800;
+        int star_y = (i * 73) % 600;
+        fill_circle(star_x, star_y, 1);
+    }
+}

@@ -1,0 +1,8 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 08:41:11
+Input: examples\lib\math_src.dis
+Output: examples\lib\math.disll
+Mode: lib
+Tokens: 209
+Library created: examples\lib\math.disll
+Status: Success

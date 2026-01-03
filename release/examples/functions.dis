@@ -1,0 +1,15 @@
+// Functions example in DISP
+
+func add(a: int, b: int) -> int {
+    return a + b
+}
+
+func greet(name: string) {
+    print "Hello, "
+    print name
+}
+
+// Main code
+x = add(5, 3)
+print "5 + 3 ="
+greet("World")

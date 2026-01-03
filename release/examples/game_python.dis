@@ -1,0 +1,39 @@
+// Simple Game in Python-style Displexity
+
+// Game setup
+window("Python Game", 800, 600)
+opengl()
+projection_2d()
+
+// Game variables
+player_x = 400
+player_y = 300
+score = 0
+
+print("Starting game...")
+
+// Game loop
+for (frame = 0; frame < 1000; frame++) {
+    clear()
+    
+    // Simple player movement (auto-move for demo)
+    player_x += 1
+    if (player_x > 800) {
+        player_x = 0
+        score += 1
+    }
+    
+    // Draw player
+    color(0.0, 1.0, 0.0)  // Green
+    rect(player_x, player_y, 32, 32)
+    
+    // Draw score (conceptual - would need text rendering)
+    color(1.0, 1.0, 1.0)  // White
+    for (i = 0; i < score; i++) {
+        rect(10 + i * 15, 10, 10, 10)
+    }
+    
+    render()
+}
+
+print("Game over! Final score: " + str(score))

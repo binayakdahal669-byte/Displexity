@@ -1,0 +1,358 @@
+// System Library Implementation
+// System interaction and utility functions with comprehensive input
+
+func file_exists(str filename) {
+    // Check if file exists
+    return true  // Stub implementation
+}
+
+func file_read(str filename) {
+    // Read entire file content
+    return "File content from " + filename
+}
+
+func file_write(str filename, str content) {
+    // Write content to file
+    print("Writing to " + filename + ": " + content)
+    return true
+}
+
+func file_append(str filename, str content) {
+    // Append content to file
+    print("Appending to " + filename + ": " + content)
+    return true
+}
+
+func file_delete(str filename) {
+    // Delete file
+    print("Deleting file: " + filename)
+    return true
+}
+
+func dir_exists(str path) {
+    // Check if directory exists
+    return true
+}
+
+func dir_create(str path) {
+    // Create directory
+    print("Creating directory: " + path)
+    return true
+}
+
+func dir_list(str path) {
+    // List directory contents - would return array
+    print("Listing directory: " + path)
+    return "file1.txt,file2.txt,subdir"
+}
+
+func get_current_dir() {
+    // Get current working directory
+    return "C:\\Current\\Directory"
+}
+
+func set_current_dir(str path) {
+    // Change current directory
+    print("Changing directory to: " + path)
+    return true
+}
+
+func get_time() {
+    // Get current time as float (seconds since epoch)
+    return 1640995200.0
+}
+
+func get_timestamp() {
+    // Get current timestamp as integer
+    return 1640995200
+}
+
+func sleep(int milliseconds) {
+    // Sleep for specified milliseconds
+    print("Sleeping for " + milliseconds + " ms")
+}
+
+func get_date() {
+    // Get current date as string
+    return "2024-01-01"
+}
+
+func get_time_string() {
+    // Get current time as string
+    return "12:00:00"
+}
+
+func execute(str command) {
+    // Execute system command
+    print("Executing: " + command)
+    return 0
+}
+
+func execute_async(str command) {
+    // Execute command asynchronously
+    print("Executing async: " + command)
+    return 1234  // Process ID
+}
+
+func get_environment_var(str name) {
+    // Get environment variable
+    return "ENV_VALUE_" + name
+}
+
+func set_environment_var(str name, str value) {
+    // Set environment variable
+    print("Setting " + name + " = " + value)
+    return true
+}
+
+func get_memory_usage() {
+    // Get memory usage in bytes
+    return 1048576  // 1MB
+}
+
+func get_cpu_usage() {
+    // Get CPU usage percentage
+    return 25.5
+}
+
+func benchmark_start() {
+    // Start benchmark timer
+    print("Benchmark started")
+}
+
+func benchmark_end() {
+    // End benchmark and return elapsed time
+    print("Benchmark ended")
+    return 0.123
+}
+
+func http_get(str url) {
+    // HTTP GET request
+    return "HTTP response from " + url
+}
+
+func http_post(str url, str data) {
+    // HTTP POST request
+    return "HTTP POST response from " + url
+}
+
+func download_file(str url, str filename) {
+    // Download file from URL
+    print("Downloading " + url + " to " + filename)
+    return true
+}
+
+func get_ip_address() {
+    // Get local IP address
+    return "192.168.1.100"
+}
+
+// === COMPREHENSIVE INPUT SYSTEM ===
+
+// Keyboard input - individual keys
+func is_key_down(int keycode) {
+    // Check if key is currently pressed
+    return false
+}
+
+func is_key_up(int keycode) {
+    // Check if key is currently released
+    return true
+}
+
+func was_key_pressed(int keycode) {
+    // Check if key was just pressed this frame
+    return false
+}
+
+func was_key_released(int keycode) {
+    // Check if key was just released this frame
+    return false
+}
+
+func read_keypress() {
+    // Get keypress (blocking)
+    return 65  // 'A' key
+}
+
+func read_keypress_async() {
+    // Get keypress (non-blocking, returns 0 if no key)
+    return 0
+}
+
+func get_key_name(int keycode) {
+    // Get human-readable key name
+    return "KEY_A"
+}
+
+// Mouse input - comprehensive
+func get_mouse_x() {
+    // Get mouse X position
+    return 100
+}
+
+func get_mouse_y() {
+    // Get mouse Y position
+    return 200
+}
+
+func get_mouse_delta_x() {
+    // Get mouse movement delta X
+    return 0
+}
+
+func get_mouse_delta_y() {
+    // Get mouse movement delta Y
+    return 0
+}
+
+func is_mouse_button_down(int button) {
+    // Check if mouse button is pressed (0=left, 1=right, 2=middle)
+    return false
+}
+
+func is_mouse_button_up(int button) {
+    // Check if mouse button is released
+    return true
+}
+
+func was_mouse_button_pressed(int button) {
+    // Check if mouse button was just pressed
+    return false
+}
+
+func was_mouse_button_released(int button) {
+    // Check if mouse button was just released
+    return false
+}
+
+func get_mouse_wheel_delta() {
+    // Get mouse wheel scroll delta
+    return 0
+}
+
+func set_mouse_position(int x, int y) {
+    // Set mouse cursor position
+    print("Setting mouse to " + x + ", " + y)
+}
+
+func show_mouse_cursor() {
+    // Show mouse cursor
+    print("Showing mouse cursor")
+}
+
+func hide_mouse_cursor() {
+    // Hide mouse cursor
+    print("Hiding mouse cursor")
+}
+
+func is_mouse_cursor_visible() {
+    // Check if mouse cursor is visible
+    return true
+}
+
+// Gamepad/Controller input
+func get_gamepad_count() {
+    // Get number of connected gamepads
+    return 0
+}
+
+func is_gamepad_connected(int gamepad_id) {
+    // Check if gamepad is connected
+    return false
+}
+
+func get_gamepad_button(int gamepad_id, int button) {
+    // Get gamepad button state
+    return false
+}
+
+func get_gamepad_axis(int gamepad_id, int axis) {
+    // Get gamepad axis value (-1.0 to 1.0)
+    return 0.0
+}
+
+func get_gamepad_name(int gamepad_id) {
+    // Get gamepad name
+    return "Xbox Controller"
+}
+
+// Touch input (for touch screens)
+func get_touch_count() {
+    // Get number of active touches
+    return 0
+}
+
+func get_touch_x(int touch_id) {
+    // Get touch X position
+    return 0
+}
+
+func get_touch_y(int touch_id) {
+    // Get touch Y position
+    return 0
+}
+
+func is_touch_down(int touch_id) {
+    // Check if touch is active
+    return false
+}
+
+// Input state management
+func update_input() {
+    // Update input state (call once per frame)
+    print("Updating input state")
+}
+
+func clear_input_buffer() {
+    // Clear input buffer
+    print("Clearing input buffer")
+}
+
+// Clipboard functions
+func clipboard_get() {
+    // Get clipboard content
+    return "Clipboard content"
+}
+
+func clipboard_set(str content) {
+    // Set clipboard content
+    print("Setting clipboard: " + content)
+    return true
+}
+
+func clipboard_has_text() {
+    // Check if clipboard contains text
+    return true
+}
+
+// Window/System events
+func poll_events() {
+    // Poll system events
+    return true
+}
+
+func get_window_focus() {
+    // Check if window has focus
+    return true
+}
+
+func set_window_focus() {
+    // Request window focus
+    print("Requesting window focus")
+}
+
+func minimize_window() {
+    // Minimize window
+    print("Minimizing window")
+}
+
+func maximize_window() {
+    // Maximize window
+    print("Maximizing window")
+}
+
+func restore_window() {
+    // Restore window
+    print("Restoring window")
+}

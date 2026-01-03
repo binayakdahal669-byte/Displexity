@@ -1,0 +1,25 @@
+// Test crypto library functionality
+include "release/lib/displexity/crypto.disll"
+
+print("=== Crypto Library Test ===")
+
+str data = "hello world"
+str hash = md5_hash(data)
+print("MD5 hash: " << hash)
+
+str sha_hash = sha256_hash(data)
+print("SHA256 hash: " << sha_hash)
+
+str encrypted = aes_encrypt(data, "secret_key", "init_vector")
+print("Encrypted: " << encrypted)
+
+str decrypted = aes_decrypt(encrypted, "secret_key", "init_vector")
+print("Decrypted: " << decrypted)
+
+str encoded = base64_encode(data)
+print("Base64 encoded: " << encoded)
+
+str decoded = base64_decode(encoded)
+print("Base64 decoded: " << decoded)
+
+print("=== Crypto test complete ===")

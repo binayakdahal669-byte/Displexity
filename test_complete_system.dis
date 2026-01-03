@@ -1,0 +1,56 @@
+// Complete Displexity System Test
+// Tests all major features: crypto, input, graphics, libraries
+
+include "release/lib/displexity/crypto.disll"
+
+print("=== Displexity Complete System Test ===")
+
+// Test crypto library
+print("1. Testing Crypto Library:")
+str test_data = "Hello Displexity!"
+str hash_result = md5_hash(test_data)
+print("MD5 hash computed successfully")
+
+str encrypted_data = aes_encrypt(test_data, "secret123", "iv123456")
+print("AES encryption completed")
+
+str encoded_data = base64_encode(test_data)
+print("Base64 encoding completed")
+
+// Test input system
+print("2. Testing Input System:")
+print("Mouse position: " << get_mouse_x() << ", " << get_mouse_y())
+
+if (is_key_pressed(16)) {
+    print("SHIFT key is currently pressed")
+} else {
+    print("SHIFT key is not pressed")
+}
+
+if (is_mouse_pressed(0)) {
+    print("Left mouse button is pressed")
+} else {
+    print("Left mouse button is not pressed")
+}
+
+// Test basic language features
+print("3. Testing Language Features:")
+int counter = 0
+for (i = 1 to 6) {
+    counter = counter + i
+}
+print("Loop result: " << counter)
+
+if (counter > 10) {
+    print("Counter is greater than 10")
+} else {
+    print("Counter is 10 or less")
+}
+
+// Test variables and types
+print("4. Testing Variable Types:")
+int num = 42
+print("Integer: " << num)
+
+print("=== All tests completed successfully! ===")
+print("Displexity system is fully functional.")

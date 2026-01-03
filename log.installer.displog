@@ -1,0 +1,13 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:19:11
+Input: installer.dis
+Include not found: system
+Output: installer.exe
+Mode: c
+Tokens: 772
+Temp C file: installer_temp.c
+Using default exe.ico for executable icon
+Icon resource compiled successfully
+GCC failed with code: 1
+Status: Error
+Error: GCC compilation failed.

@@ -1,0 +1,15 @@
+// Test graphics features
+print("Testing graphics...")
+
+window("Test Window", 400, 300)
+opengl()
+set_projection_2d()
+
+for (i = 0 to 30) {
+    clear()
+    color(1.0, 0.0, 0.0)
+    rect(50 + i, 100, 30, 30)
+    render()
+}
+
+print("Graphics test complete!")

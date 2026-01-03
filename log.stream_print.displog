@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 07:59:36
+Input: examples\stream_print.dis
+Output: stream_print.exe
+Mode: c
+Tokens: 70
+Temp C file: stream_print_temp.c
+GCC succeeded: stream_print.exe
+Status: Success

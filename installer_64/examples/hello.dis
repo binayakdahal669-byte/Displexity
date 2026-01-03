@@ -1,0 +1,7 @@
+// Hello World in DISP (.dis source file)
+function main() {
+    Array[] message = "Hello, DISP World!";
+    print(message);
+    return 0;
+
+}

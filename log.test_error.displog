@@ -1,0 +1,10 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 03:10:37
+Input: test_error.dis
+Output: test_error.c
+Mode: c
+Tokens: 23
+Lexer error at line 11: Unterminated string literal starting at line 11, column 5
+Syntax error at line 4: Expected parameter name
+Status: Error
+Error: Syntax errors found

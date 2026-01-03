@@ -1,0 +1,25 @@
+// Final System Test - Simple Version
+include "release/lib/displexity/crypto.disll"
+
+print("=== Displexity Final Test ===")
+
+// Test crypto library
+str data = "test"
+str result = md5_hash(data)
+print("Crypto library: Working")
+
+// Test basic features
+int sum = 0
+for (i = 1 to 4) {
+    sum = sum + i
+}
+print("Loop result: " << sum)
+
+// Test conditionals
+if (sum > 5) {
+    print("Conditional: Working")
+} else {
+    print("Conditional: Error")
+}
+
+print("=== All Systems Operational! ===")

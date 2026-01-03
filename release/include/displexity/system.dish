@@ -1,0 +1,187 @@
+// Displexity System Library Header
+// System interaction and utility functions with comprehensive input
+
+// File operations
+def file_exists(str filename) -> bool
+def file_read(str filename) -> str
+def file_write(str filename, str content) -> bool
+def file_append(str filename, str content) -> bool
+def file_delete(str filename) -> bool
+
+// Directory operations
+def dir_exists(str path) -> bool
+def dir_create(str path) -> bool
+def dir_list(str path) -> str
+def get_current_dir() -> str
+def set_current_dir(str path) -> bool
+
+// Time functions
+def get_time() -> float
+def get_timestamp() -> int
+def sleep(int milliseconds)
+def get_date() -> str
+def get_time_string() -> str
+
+// Process management
+def execute(str command) -> int
+def execute_async(str command) -> int
+def get_environment_var(str name) -> str
+def set_environment_var(str name, str value) -> bool
+
+// Memory and performance
+def get_memory_usage() -> int
+def get_cpu_usage() -> float
+def benchmark_start()
+def benchmark_end() -> float
+
+// Network functions
+def http_get(str url) -> str
+def http_post(str url, str data) -> str
+def download_file(str url, str filename) -> bool
+def get_ip_address() -> str
+
+// === COMPREHENSIVE INPUT SYSTEM ===
+
+// Keyboard input - individual keys
+def is_key_down(int keycode) -> bool
+def is_key_up(int keycode) -> bool
+def was_key_pressed(int keycode) -> bool
+def was_key_released(int keycode) -> bool
+def read_keypress() -> int
+def read_keypress_async() -> int
+def get_key_name(int keycode) -> str
+
+// Mouse input - comprehensive
+def get_mouse_x() -> int
+def get_mouse_y() -> int
+def get_mouse_delta_x() -> int
+def get_mouse_delta_y() -> int
+def is_mouse_button_down(int button) -> bool
+def is_mouse_button_up(int button) -> bool
+def was_mouse_button_pressed(int button) -> bool
+def was_mouse_button_released(int button) -> bool
+def get_mouse_wheel_delta() -> int
+def set_mouse_position(int x, int y)
+def show_mouse_cursor()
+def hide_mouse_cursor()
+def is_mouse_cursor_visible() -> bool
+
+// Gamepad/Controller input
+def get_gamepad_count() -> int
+def is_gamepad_connected(int gamepad_id) -> bool
+def get_gamepad_button(int gamepad_id, int button) -> bool
+def get_gamepad_axis(int gamepad_id, int axis) -> float
+def get_gamepad_name(int gamepad_id) -> str
+
+// Touch input (for touch screens)
+def get_touch_count() -> int
+def get_touch_x(int touch_id) -> int
+def get_touch_y(int touch_id) -> int
+def is_touch_down(int touch_id) -> bool
+
+// Input state management
+def update_input()
+def clear_input_buffer()
+
+// Clipboard functions
+def clipboard_get() -> str
+def clipboard_set(str content) -> bool
+def clipboard_has_text() -> bool
+
+// Window/System events
+def poll_events() -> bool
+def get_window_focus() -> bool
+def set_window_focus()
+def minimize_window()
+def maximize_window()
+def restore_window()
+
+// Key codes (common keys)
+int KEY_A = 65
+int KEY_B = 66
+int KEY_C = 67
+int KEY_D = 68
+int KEY_E = 69
+int KEY_F = 70
+int KEY_G = 71
+int KEY_H = 72
+int KEY_I = 73
+int KEY_J = 74
+int KEY_K = 75
+int KEY_L = 76
+int KEY_M = 77
+int KEY_N = 78
+int KEY_O = 79
+int KEY_P = 80
+int KEY_Q = 81
+int KEY_R = 82
+int KEY_S = 83
+int KEY_T = 84
+int KEY_U = 85
+int KEY_V = 86
+int KEY_W = 87
+int KEY_X = 88
+int KEY_Y = 89
+int KEY_Z = 90
+
+int KEY_0 = 48
+int KEY_1 = 49
+int KEY_2 = 50
+int KEY_3 = 51
+int KEY_4 = 52
+int KEY_5 = 53
+int KEY_6 = 54
+int KEY_7 = 55
+int KEY_8 = 56
+int KEY_9 = 57
+
+int KEY_SPACE = 32
+int KEY_ENTER = 13
+int KEY_ESCAPE = 27
+int KEY_TAB = 9
+int KEY_BACKSPACE = 8
+int KEY_DELETE = 127
+int KEY_LEFT = 37
+int KEY_UP = 38
+int KEY_RIGHT = 39
+int KEY_DOWN = 40
+int KEY_SHIFT = 16
+int KEY_CTRL = 17
+int KEY_ALT = 18
+int KEY_F1 = 112
+int KEY_F2 = 113
+int KEY_F3 = 114
+int KEY_F4 = 115
+int KEY_F5 = 116
+int KEY_F6 = 117
+int KEY_F7 = 118
+int KEY_F8 = 119
+int KEY_F9 = 120
+int KEY_F10 = 121
+int KEY_F11 = 122
+int KEY_F12 = 123
+
+// Mouse buttons
+int MOUSE_LEFT = 0
+int MOUSE_RIGHT = 1
+int MOUSE_MIDDLE = 2
+
+// Gamepad buttons (Xbox-style)
+int GAMEPAD_A = 0
+int GAMEPAD_B = 1
+int GAMEPAD_X = 2
+int GAMEPAD_Y = 3
+int GAMEPAD_LB = 4
+int GAMEPAD_RB = 5
+int GAMEPAD_BACK = 6
+int GAMEPAD_START = 7
+int GAMEPAD_LS = 8
+int GAMEPAD_RS = 9
+
+// Gamepad axes
+int GAMEPAD_LEFT_X = 0
+int GAMEPAD_LEFT_Y = 1
+int GAMEPAD_RIGHT_X = 2
+int GAMEPAD_RIGHT_Y = 3
+int GAMEPAD_LT = 4
+int GAMEPAD_RT = 5

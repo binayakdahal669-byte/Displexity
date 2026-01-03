@@ -1,0 +1,18 @@
+// Typed input example
+print "=== Typed Input Demo ==="
+
+// String input (default)
+input "Enter your name: " name;
+print name
+
+// Integer input
+input<int> "Enter your age: " age;
+print age
+
+// Float input  
+input<float> "Enter a decimal: " decimal;
+
+// Bool input
+input<bool> "Are you happy? (yes/no): " happy;
+
+print "Done!"

@@ -1,0 +1,36 @@
+// DISP Keypress and Hotkey Demo
+function handle_escape() {
+    print("Escape key pressed!");
+    return 0;
+}
+
+function handle_enter() {
+    print("Enter key pressed!");
+    return 0;
+}
+
+function main() {
+    print("DISP Keypress Demo - Press keys, ESC to exit");
+    
+    // Register hotkeys
+    register_hotkey(27, handle_escape);  // ESC key
+    register_hotkey(13, handle_enter);   // Enter key
+    
+    running = 1;
+    while (running) {
+        key = get_keypress();
+        
+        if (key == 27) {  // ESC
+            running = 0;
+        } else {
+            key_str = keypress_to_string(key);
+            print("Key pressed: ");
+            print(key_str);
+        }
+        
+        // Process hotkeys
+        process_hotkeys();
+    }
+    
+    return 0;
+}

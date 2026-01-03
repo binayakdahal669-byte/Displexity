@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:10:13
+Input: lib_sources\crypto_lib.dis
+Output: release\lib\displexity\crypto.disll
+Mode: lib
+Tokens: 652
+Syntax error at line 172: stol
+Status: Error
+Error: Syntax errors found

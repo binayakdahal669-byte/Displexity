@@ -1,0 +1,10 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:14:17
+Input: test_complete_system.dis
+Error loading library release/lib/displexity/crypto.disll: Corrupted .disll file - checksum mismatch
+Output: test_complete_system.exe
+Mode: c
+Tokens: 180
+Syntax error at line 52: Expected variable name after type
+Status: Error
+Error: Syntax errors found

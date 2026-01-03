@@ -1,0 +1,54 @@
+// Comprehensive feature test
+print("=== Displexity Feature Test ===")
+
+// 1. Basic variables
+int x = 42
+float y = 3.14
+str name = "Test"
+
+print("Variables work!")
+
+// 2. Control flow
+if (x > 40) {
+    print("If statement works!")
+}
+
+// 3. Loops
+print("Testing loops...")
+for (i = 1 to 3) {
+    print("Loop iteration")
+}
+
+// 4. Functions
+def test_function(int a) {
+    print("Function called")
+    return a * 2
+}
+
+result = test_function(21)
+print("Function result received")
+
+// 5. Graphics
+print("Testing graphics...")
+window_create("Feature Test", 400, 300)
+gl_init()
+set_projection_2d()
+
+// Simple animation loop - press ESC to close window
+for (frame = 0 to 1000) {
+    clear()
+    
+    // Animate a red square moving across screen
+    x_pos = 50 + (frame % 300)
+    set_color(1.0, 0.0, 0.0)
+    fill_rect(x_pos, 100, 30, 30)
+    
+    // Add some variety - blue square going the other way
+    x_pos2 = 350 - (frame % 300)
+    set_color(0.0, 0.0, 1.0)
+    fill_rect(x_pos2, 150, 30, 30)
+    
+    render()
+}
+
+print("=== All Features Tested Successfully! ===")

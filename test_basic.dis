@@ -1,0 +1,36 @@
+// Test basic language features
+print("=== Basic Features Test ===")
+
+// Variables and types
+int x = 42
+float y = 3.14
+str name = "Alice"
+bool active = true
+
+print("Integer: " + str(x))
+print("Float: " + str(y))
+print("String: " + name)
+print("Boolean: " + str(active))
+
+// Control flow
+if (x > 40) {
+    print("X is greater than 40")
+} else {
+    print("X is not greater than 40")
+}
+
+// Loops
+print("Counting to 5:")
+for (i = 1; i <= 5; i++) {
+    print("Count: " + str(i))
+}
+
+// Functions
+def add(int a, int b) {
+    return a + b
+}
+
+result = add(10, 20)
+print("10 + 20 = " + str(result))
+
+print("Basic features test complete!")

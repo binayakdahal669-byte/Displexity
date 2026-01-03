@@ -1,0 +1,81 @@
+// Advanced DISP features
+include "math.dish"
+include "network.dish"
+
+class WebServer {
+    function start(port) {
+        Array[] message = "Starting server on port ";
+        print(message);
+        print(port);
+        
+        // HTTP server loop
+        while (1) {
+            http "0.0.0.0:" + port "LISTEN" request;
+            
+            if (request != "") {
+                response = processRequest(request);
+                http response "SEND" result;
+            }
+        }
+        
+        return 0;
+    }
+    
+    function processRequest(request) {
+        Array[] response = "HTTP/1.1 200 OK\r\n\r\nHello from DISP!";
+        return response;
+    }
+}
+
+class GameEngine {
+    function init() {
+        graphics.init();
+        clear();
+        return 0;
+    }
+    
+    function gameLoop() {
+        running = 1;
+        
+        while (running) {
+            clear();
+            
+            // Game logic here
+            updateGame();
+            renderGame();
+            
+            // Simple frame rate control
+            sleep(16); // ~60 FPS
+        }
+        
+        return 0;
+    }
+    
+    function updateGame() {
+        // Update game state
+        return 0;
+    }
+    
+    function renderGame() {
+        // Render graphics
+        draw_pixel();
+        return 0;
+    }
+}
+
+function main() {
+    Array[] choice = "1";
+    
+    if (choice == "1") {
+        // Start web server
+        server = WebServer();
+        server.start(8080);
+    } else {
+        // Start game
+        game = GameEngine();
+        game.init();
+        game.gameLoop();
+    }
+    
+    return 0;
+}

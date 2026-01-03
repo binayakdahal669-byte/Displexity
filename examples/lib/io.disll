@@ -1,0 +1,25 @@
+// io.disll - I/O utilities implementation for Displexity
+
+// Print string with newline
+func println(str msg) {
+    print(msg << "\n");
+    return 0;
+}
+
+// Print number with newline
+func printnum(int n) {
+    print("" << n << "\n");
+    return 0;
+}
+
+// Print number in hex format
+func printhex(int n) {
+    n >> hex;
+    return 0;
+}
+
+// Print number in binary format
+func printbin(int n) {
+    n >> bin;
+    return 0;
+}

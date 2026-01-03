@@ -1,0 +1,4 @@
+// Simple test
+print("Hello World\n");
+int x = 42;
+print("x = " << x << "\n");

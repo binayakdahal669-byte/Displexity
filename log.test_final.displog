@@ -1,0 +1,13 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:14:44
+Input: test_final.dis
+Error loading library release/lib/displexity/crypto.disll: Corrupted .disll file - checksum mismatch
+Output: test_final.exe
+Mode: c
+Tokens: 63
+Temp C file: test_final_temp.c
+Using default exe.ico for executable icon
+Icon resource compiled successfully
+GCC failed with code: 1
+Status: Error
+Error: GCC compilation failed.

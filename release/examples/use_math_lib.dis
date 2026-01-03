@@ -1,0 +1,30 @@
+// use_math_lib.dis - Demo using compiled math library
+include "lib/math.dish"
+include "lib/math.disll"
+
+print("=== Math Library Demo ===\n");
+
+// Test abs
+int x = -42;
+int result = abs(x);
+print("abs(-42) = " << result << "\n");
+
+// Test max/min
+print("max(10, 25) = " << max(10, 25) << "\n");
+print("min(10, 25) = " << min(10, 25) << "\n");
+
+// Test pow -> power
+print("power(2, 8) = " << power(2, 8) << "\n");
+print("power(3, 4) = " << power(3, 4) << "\n");
+
+// Test factorial
+print("factorial(5) = " << factorial(5) << "\n");
+print("factorial(7) = " << factorial(7) << "\n");
+
+// Test fibonacci
+print("\nFibonacci sequence:\n");
+for (i = 0 to 10) {
+    print("fib(" << i << ") = " << fib(i) << "\n");
+}
+
+print("\nDone!\n");

@@ -1,0 +1,7 @@
+// Stream print test
+int x = 42;
+print("x = " << x << "\n");
+for (i = 0 to 3) {
+    print("i = " << i << "\n");
+}
+print("Done\n");

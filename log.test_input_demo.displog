@@ -1,0 +1,11 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 19:15:32
+Input: test_input_demo.dis
+Output: test_input_demo.exe
+Mode: c
+Tokens: 79
+Temp C file: test_input_demo_temp.c
+Using default exe.ico for executable icon
+Icon resource compiled successfully
+GCC succeeded: test_input_demo.exe
+Status: Success

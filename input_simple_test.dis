@@ -1,0 +1,4 @@
+// Simple Input Function Test
+
+int key_state = is_key_pressed(65)
+print("Key state: " + key_state)

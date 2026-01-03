@@ -1,0 +1,9 @@
+// Example 4: Functions
+func add(a: int, b: int) -> int {
+    c = a + b;
+    return c;
+    return c
+}
+
+result = add(5, 3);
+print "Function called"

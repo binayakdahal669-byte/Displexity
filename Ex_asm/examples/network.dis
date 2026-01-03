@@ -1,0 +1,6 @@
+// Example 8: HTTP request simulation
+include "graphics";
+
+print "HTTP request example";
+// Would make network requests
+print "HTTP request example"

@@ -1,0 +1,29 @@
+// Simple Input Test
+// Tests basic input functionality
+
+window_create("Simple Input Test", 800, 600)
+gl_init()
+set_projection_2d()
+
+print("Simple Input Test - Press any key to see keycode")
+print("Press ESC to exit")
+
+int running = 1
+while (running == 1) {
+    clear()
+    set_clear_color(0.1, 0.1, 0.2, 1.0)
+    
+    // Draw some basic shapes
+    set_color(1.0, 0.0, 0.0)
+    fill_rect(100, 100, 100, 100)
+    
+    set_color(0.0, 1.0, 0.0)
+    fill_circle(400, 300, 50)
+    
+    set_color(0.0, 0.0, 1.0)
+    draw_triangle(600, 200, 550, 300, 650, 300)
+    
+    render()
+}
+
+print("Simple input test completed!")

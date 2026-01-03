@@ -1,0 +1,10 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 20:38:14
+Input: examples/hello_working.dis
+Output: hello_working.c
+Mode: c
+Verbose: true
+Tokens: 100
+Syntax error at line 9: Expected expression
+Status: Error
+Error: Syntax errors found

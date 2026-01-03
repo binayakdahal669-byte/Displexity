@@ -1,0 +1,25 @@
+// Hello World with working syntax
+print("Hello, World!")
+
+// Simple variables
+x = 42
+y = 3.14
+name = "Alice"
+
+print("Number: " + str(x))
+print("Float: " + str(y))  
+print("Name: " + name)
+
+// Simple graphics test
+window("Test Game", 400, 300)
+opengl()
+projection_2d()
+
+for (i = 0; i < 50; i++) {
+    clear()
+    color(1.0, 0.0, 0.0)
+    rect(50 + i * 2, 100, 30, 30)
+    render()
+}
+
+print("Demo complete!")

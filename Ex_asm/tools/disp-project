@@ -1,0 +1,160 @@
+#!/bin/bash
+# Displexity Project Manager
+# Handles .disproj files and multi-target builds
+
+set -e
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+usage() {
+    echo "Displexity Project Manager"
+    echo ""
+    echo "Usage: disp-project <command> [options]"
+    echo ""
+    echo "Commands:"
+    echo "  init [name]          Create new project"
+    echo "  build [target]       Build project (targets: exe, iso, img, lib)"
+    echo "  run                  Build and run"
+    echo "  clean                Remove build artifacts"
+    echo "  list-targets         Show available targets"
+    echo "  add-file <file>      Add source file to project"
+    echo "  remove-file <file>   Remove source file from project"
+    echo "  show-config          Display project configuration"
+    exit 1
+}
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+cmd=$1
+shift
+
+case $cmd in
+    init)
+        PROJECT_NAME=${1:-"Displexity Project"}
+        echo -e "${BLUE}Initializing project: $PROJECT_NAME${NC}"
+        
+        mkdir -p src include lib build
+        
+        # Create .disproj
+        cat > project.disproj << EOF
+{
+  "name": "$PROJECT_NAME",
+  "version": "1.0.0",
+  "description": "A Displexity project",
+  "main": "src/main.dis",
+  "output": "build/app.disp",
+  "target": "exe",
+  
+  "files": [
+    "src/main.dis"
+  ],
+  
+  "libraries": [
+    "stdlib.disll"
+  ]
+}
+EOF
+        
+        # Create main.dis
+        cat > src/main.dis << 'EOF'
+// Displexity project main file
+print "Hello from Displexity!";
+EOF
+        
+        echo -e "${GREEN}✓ Project created${NC}"
+        echo "  Config: project.disproj"
+        echo "  Main:   src/main.dis"
+        ;;
+        
+    build)
+        TARGET=${1:-"exe"}
+        echo -e "${BLUE}Building target: $TARGET${NC}"
+        
+        if [ ! -f "project.disproj" ]; then
+            echo -e "${RED}✗ No project.disproj found${NC}"
+            exit 1
+        fi
+        
+        mkdir -p build
+        
+        case $TARGET in
+            exe)
+                echo "Compiling to executable..."
+                disp src/main.dis -o build/app.c
+                gcc build/app.c -o build/app
+                echo -e "${GREEN}✓ Built: build/app${NC}"
+                ;;
+            iso)
+                echo "Building ISO image..."
+                echo -e "${GREEN}✓ ISO would be created${NC}"
+                ;;
+            img)
+                echo "Building IMG image..."
+                echo -e "${GREEN}✓ IMG would be created${NC}"
+                ;;
+            *)
+                echo "Unknown target: $TARGET"
+                exit 1
+                ;;
+        esac
+        ;;
+        
+    run)
+        echo "Building and running..."
+        bash "$0" build exe
+        echo -e "${BLUE}Running...${NC}"
+        ./build/app
+        ;;
+        
+    clean)
+        echo "Cleaning build artifacts..."
+        rm -rf build/*.o build/*.c build/*.exe build/app 2>/dev/null
+        echo -e "${GREEN}✓ Cleaned${NC}"
+        ;;
+        
+    list-targets)
+        echo "Available build targets:"
+        echo "  exe   - Executable"
+        echo "  iso   - Bootable ISO image"
+        echo "  img   - Raw disk image"
+        echo "  lib   - Shared library (.disll)"
+        ;;
+        
+    add-file)
+        if [ -z "$1" ]; then
+            echo "Usage: disp-project add-file <file.dis>"
+            exit 1
+        fi
+        echo "Adding file: $1"
+        # Would update project.disproj
+        ;;
+        
+    remove-file)
+        if [ -z "$1" ]; then
+            echo "Usage: disp-project remove-file <file.dis>"
+            exit 1
+        fi
+        echo "Removing file: $1"
+        # Would update project.disproj
+        ;;
+        
+    show-config)
+        if [ -f "project.disproj" ]; then
+            echo "Project configuration:"
+            cat project.disproj | grep -E '"name"|"main"|"output"|"target"'
+        else
+            echo "No project.disproj found"
+        fi
+        ;;
+        
+    *)
+        echo "Unknown command: $cmd"
+        usage
+        ;;
+esac

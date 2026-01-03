@@ -1,0 +1,11 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 03:24:27
+Input: examples\http.dis
+Output: test_http.exe
+Mode: c
+Verbose: true
+Tokens: 9
+Temp C file: test_http_temp.c
+GCC command: gcc test_http_temp.c -o test_http.exe -lwininet
+GCC succeeded: test_http.exe
+Status: Success

@@ -1,0 +1,39 @@
+[2026-01-01 19:36:45.187] INFO: === DISP Compiler Session Started ===
+[2026-01-01 19:36:45.190] INFO: DISP Compiler started
+[2026-01-01 19:36:45.191] INFO: Input: test.disp
+[2026-01-01 19:36:45.191] INFO: Output: test.dis
+[2026-01-01 19:36:45.191] INFO: Target: native
+[2026-01-01 19:36:45.192] INFO: Starting lexical analysis...
+[2026-01-01 19:36:45.193] INFO: Starting parsing...
+[2026-01-01 19:36:45.198] ERROR: Compilation failed: Unexpected token in expression: }
+[2026-01-01 19:36:45.199] INFO: === DISP Compiler Session Ended ===
+[2026-01-01 19:38:42.865] INFO: === DISP Compiler Session Started ===
+[2026-01-01 19:38:42.866] INFO: DISP Compiler started
+[2026-01-01 19:38:42.866] INFO: Input: test.disp
+[2026-01-01 19:38:42.866] INFO: Output: test.dis
+[2026-01-01 19:38:42.867] INFO: Target: native
+[2026-01-01 19:38:42.867] INFO: Starting lexical analysis...
+[2026-01-01 19:38:42.867] INFO: Starting parsing...
+[2026-01-01 19:38:42.868] INFO: Starting code generation...
+[2026-01-01 19:38:42.869] INFO: Compilation successful: test.dis
+[2026-01-01 19:38:42.870] INFO: === DISP Compiler Session Ended ===
+[2026-01-01 19:41:03.953] INFO: === DISP Compiler Session Started ===
+[2026-01-01 19:41:03.954] INFO: DISP Compiler started
+[2026-01-01 19:41:03.954] INFO: Input: examples\hello.disp
+[2026-01-01 19:41:03.955] INFO: Output: hello_test.dis
+[2026-01-01 19:41:03.955] INFO: Target: native
+[2026-01-01 19:41:03.956] INFO: Starting lexical analysis...
+[2026-01-01 19:41:03.957] INFO: Starting parsing...
+[2026-01-01 19:41:03.957] INFO: Starting code generation...
+[2026-01-01 19:41:03.958] INFO: Compilation successful: hello_test.dis
+[2026-01-01 19:41:03.959] INFO: === DISP Compiler Session Ended ===
+[2026-01-01 20:11:33.930] INFO: === DISP Compiler Session Started ===
+[2026-01-01 20:11:33.932] INFO: DISP Compiler started
+[2026-01-01 20:11:33.933] INFO: Input: examples\keypress_demo.disp
+[2026-01-01 20:11:33.933] INFO: Output: keypress_test.dis
+[2026-01-01 20:11:33.934] INFO: Target: native
+[2026-01-01 20:11:33.935] INFO: Starting lexical analysis...
+[2026-01-01 20:11:33.935] INFO: Starting parsing...
+[2026-01-01 20:11:33.936] INFO: Starting code generation...
+[2026-01-01 20:11:33.937] INFO: Compilation successful: keypress_test.dis
+[2026-01-01 20:11:33.939] INFO: === DISP Compiler Session Ended ===

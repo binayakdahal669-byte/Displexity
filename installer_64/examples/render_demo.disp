@@ -1,0 +1,63 @@
+// DISP Advanced Rendering Demo
+class RenderEngine {
+    function init() {
+        render_init();
+        gl_init();
+        return 0;
+    }
+    
+    function render_scene() {
+        gl_clear();
+        
+        // Render 3D objects
+        render_object();
+        
+        // Render UI
+        render_ui();
+        
+        return 0;
+    }
+    
+    function render_ui() {
+        // Render user interface
+        draw_text("DISP Render Engine", 10, 10);
+        draw_button("Exit", 700, 550);
+        return 0;
+    }
+}
+
+function main() {
+    print("DISP Advanced Rendering Demo");
+    
+    // Create render engine
+    engine = RenderEngine();
+    engine.init();
+    
+    // Create window with GL support
+    window_create(800, 600, "DISP Render Demo");
+    
+    // Main loop
+    running = 1;
+    frame_count = 0;
+    
+    while (running) {
+        // Handle input
+        key = get_keypress();
+        if (key == 27) {  // ESC
+            running = 0;
+        }
+        
+        // Render frame
+        engine.render_scene();
+        
+        frame_count = frame_count + 1;
+        
+        if (frame_count > 1000) {
+            print("Rendered 1000 frames");
+            frame_count = 0;
+        }
+    }
+    
+    print("Rendering demo finished");
+    return 0;
+}

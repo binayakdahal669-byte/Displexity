@@ -1,0 +1,127 @@
+// Graphics Library Implementation
+// Advanced OpenGL functions and utilities
+
+func create_window(str title, int width, int height) {
+    window_create(title, width, height)
+    gl_init()
+    set_projection_2d()
+}
+
+func destroy_window() {
+    // Window cleanup handled by runtime
+}
+
+func set_window_title(str title) {
+    // Would need Windows API calls
+}
+
+func get_window_width() {
+    // Return current window width
+    return 800
+}
+
+func get_window_height() {
+    // Return current window height
+    return 600
+}
+
+func gl_enable(int capability) {
+    // Enable OpenGL capability
+}
+
+func gl_disable(int capability) {
+    // Disable OpenGL capability  
+}
+
+func gl_blend_func(int src_factor, int dst_factor) {
+    // Set blend function
+}
+
+func gl_depth_func(int depth_func) {
+    // Set depth test function
+}
+
+func gl_cull_face(int mode) {
+    // Set face culling mode
+}
+
+func gl_polygon_mode(int face, int mode) {
+    // Set polygon rendering mode
+}
+
+func gl_line_width(float width) {
+    // Set line width
+}
+
+func gl_point_size(float point_size) {
+    // Set point size
+}
+
+func gl_gen_texture() {
+    // Generate texture ID
+    return 1
+}
+
+func gl_bind_texture(int target, int texture_id) {
+    // Bind texture
+}
+
+func gl_tex_parameter(int target, int param, int value) {
+    // Set texture parameter
+}
+
+func gl_gen_buffer() {
+    // Generate buffer ID
+    return 1
+}
+
+func gl_bind_buffer(int target, int buffer_id) {
+    // Bind buffer
+}
+
+func gl_buffer_data(int target, int buffer_size, int usage) {
+    // Upload buffer data
+}
+
+func gl_create_shader(int shader_type) {
+    // Create shader
+    return 1
+}
+
+func gl_compile_shader(int shader_id) {
+    // Compile shader
+}
+
+func gl_create_program() {
+    // Create shader program
+    return 1
+}
+
+func gl_link_program(int program_id) {
+    // Link shader program
+}
+
+func gl_use_program(int program_id) {
+    // Use shader program
+}
+
+// High-level graphics functions
+func draw_sprite(float x, float y, float width, float height) {
+    draw_quad(x, y, width, height)
+}
+
+func draw_text(str message, float x, float y) {
+    // Text rendering would need font system
+    print("Text: " + message + " at " + x + ", " + y)
+}
+
+func create_camera_2d(float x, float y, float zoom) {
+    translate(-x, -y, 0.0)
+    scale(zoom, zoom, 1.0)
+}
+
+func create_camera_3d(float x, float y, float z, float pitch, float yaw) {
+    rotate(pitch, 1.0, 0.0, 0.0)
+    rotate(yaw, 0.0, 1.0, 0.0)
+    translate(-x, -y, -z)
+}

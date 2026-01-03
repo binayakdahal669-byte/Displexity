@@ -1,0 +1,5 @@
+// Example 6: Graphics - Draw shapes
+include "graphics";
+
+print "Drawing graphics example";
+print "Drawing graphics example"

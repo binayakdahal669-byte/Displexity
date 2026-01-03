@@ -1,0 +1,34 @@
+// OpenGL Demo - Basic 2D graphics with OpenGL
+print("=== OpenGL Demo ===\n");
+
+// Initialize graphics and create window
+window_create("OpenGL Demo", 800, 600);
+gl_init();
+set_projection_2d();
+
+// Set clear color to dark blue
+set_clear_color(0.1, 0.1, 0.3, 1.0);
+
+// Game loop
+for (frame = 0 to 300) {
+    clear();
+    
+    // Draw some colorful shapes
+    set_color(1.0, 0.0, 0.0);  // Red
+    fill_rect(100, 100, 50, 50);
+    
+    set_color(0.0, 1.0, 0.0);  // Green
+    fill_circle(300, 200, 30);
+    
+    set_color(0.0, 0.0, 1.0);  // Blue
+    draw_triangle(500.0, 150.0, 450.0, 250.0, 550.0, 250.0);
+    
+    // Animated yellow rectangle
+    float x = 200.0 + frame * 2.0;
+    set_color(1.0, 1.0, 0.0);  // Yellow
+    fill_rect(x, 300, 40, 40);
+    
+    render();
+}
+
+print("Demo complete!\n");

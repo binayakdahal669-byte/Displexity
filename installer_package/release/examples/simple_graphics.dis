@@ -1,0 +1,13 @@
+// Simple Graphics Test
+print("Creating window...\n");
+window_create("Simple Graphics", 400, 300);
+gl_init();
+set_projection_2d();
+
+print("Drawing shapes...\n");
+clear();
+set_color(1.0, 0.0, 0.0);
+fill_rect(50, 50, 100, 100);
+render();
+
+print("Graphics test complete!\n");

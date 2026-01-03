@@ -1,0 +1,48 @@
+// Displexity Graphics Library Header
+// Advanced OpenGL functions and graphics utilities
+
+// Window management
+def create_window(str title, int width, int height)
+def destroy_window()
+def set_window_title(str title)
+def get_window_width() -> int
+def get_window_height() -> int
+
+// OpenGL state management  
+def gl_enable(int capability)
+def gl_disable(int capability)
+def gl_blend_func(int src_factor, int dst_factor)
+def gl_depth_func(int func)
+def gl_cull_face(int mode)
+
+// Advanced rendering
+def gl_polygon_mode(int face, int mode)
+def gl_line_width(float width)
+def gl_point_size(float size)
+
+// Texture management
+def gl_gen_texture() -> int
+def gl_bind_texture(int target, int texture_id)
+def gl_tex_parameter(int target, int param, int value)
+
+// Buffer management
+def gl_gen_buffer() -> int
+def gl_bind_buffer(int target, int buffer_id)
+def gl_buffer_data(int target, int size, int usage)
+
+// Shader management
+def gl_create_shader(int shader_type) -> int
+def gl_compile_shader(int shader_id)
+def gl_create_program() -> int
+def gl_link_program(int program_id)
+def gl_use_program(int program_id)
+
+// Constants
+int GL_TRIANGLES = 0x0004
+int GL_QUADS = 0x0007
+int GL_DEPTH_TEST = 0x0B71
+int GL_BLEND = 0x0BE2
+int GL_CULL_FACE = 0x0B44
+int GL_TEXTURE_2D = 0x0DE1
+int GL_VERTEX_SHADER = 0x8B31
+int GL_FRAGMENT_SHADER = 0x8B30

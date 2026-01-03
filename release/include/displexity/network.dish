@@ -1,0 +1,58 @@
+// Displexity Network Library Header
+// HTTP, TCP, UDP, and WebSocket functionality
+
+// HTTP functions
+def http_request(str method, str url, str headers, str body) -> str
+def http_server_create(int port) -> int
+def http_server_start(int server_handle) -> bool
+def http_server_stop(int server_handle) -> bool
+
+// TCP socket functions
+def tcp_socket_create() -> int
+def tcp_socket_connect(int socket, str host, int port) -> bool
+def tcp_socket_bind(int socket, str address, int port) -> bool
+def tcp_socket_listen(int socket, int backlog) -> bool
+def tcp_socket_accept(int socket) -> int
+def tcp_socket_send(int socket, str data) -> int
+def tcp_socket_receive(int socket, int max_bytes) -> str
+def tcp_socket_close(int socket) -> bool
+
+// UDP socket functions
+def udp_socket_create() -> int
+def udp_socket_bind(int socket, str address, int port) -> bool
+def udp_socket_send_to(int socket, str data, str address, int port) -> int
+def udp_socket_receive_data(int socket, int max_bytes) -> str
+def udp_socket_receive_address(int socket) -> str
+def udp_socket_receive_port(int socket) -> int
+def udp_socket_close(int socket) -> bool
+
+// WebSocket functions
+def websocket_create(str url) -> int
+def websocket_connect(int ws_handle) -> bool
+def websocket_send(int ws_handle, str message) -> bool
+def websocket_receive(int ws_handle) -> str
+def websocket_close(int ws_handle) -> bool
+
+// Utility functions
+def url_encode(str input) -> str
+def url_decode(str encoded) -> str
+def json_parse(str json_text) -> str
+def json_stringify(str object) -> str
+def base64_encode(str data) -> str
+def base64_decode(str encoded) -> str
+
+// Network utilities
+def dns_lookup(str hostname) -> str
+def ping(str host, int timeout) -> int
+def get_local_ip() -> str
+def get_public_ip() -> str
+def port_scan(str host, int port) -> bool
+
+// HTTP status codes
+int HTTP_OK = 200
+int HTTP_NOT_FOUND = 404
+int HTTP_SERVER_ERROR = 500
+
+// Socket types
+int SOCK_STREAM = 1  // TCP
+int SOCK_DGRAM = 2   // UDP

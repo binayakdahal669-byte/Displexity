@@ -1,0 +1,41 @@
+// Object-oriented programming in DISP
+class Calculator {
+    function add(a, b) {
+        return a + b;
+    }
+    
+    function multiply(a, b) {
+        return a * b;
+    }
+    
+    function factorial(n) {
+        if (n <= 1) {
+            return 1;
+        } else {
+            return n * factorial(n - 1);
+        }
+    }
+}
+
+class Person {
+    function greet(name) {
+        Array[] greeting = "Hello, ";
+        print(greeting);
+        print(name);
+        return 0;
+    }
+}
+
+function main() {
+    // Use Calculator class
+    result = Calculator.add(5, 3);
+    print(result); // prints 8
+    
+    factorial_result = Calculator.factorial(5);
+    print(factorial_result); // prints 120
+    
+    // Use Person class
+    Person.greet("World");
+    
+    return 0;
+}

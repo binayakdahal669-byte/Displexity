@@ -1,0 +1,10 @@
+// io.dish - I/O utilities header for Displexity
+// Declares I/O helper functions
+
+// Function declarations
+// void println(str msg) - print with newline
+// void printnum(int n) - print number with newline
+// void printhex(int n) - print number in hex
+// void printbin(int n) - print number in binary
+// str readstr(str prompt) - read string with prompt
+// int readint(str prompt) - read integer with prompt

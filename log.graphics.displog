@@ -1,0 +1,11 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 03:27:16
+Input: examples\graphics.dis
+Output: test_graphics.exe
+Mode: c
+Verbose: true
+Tokens: 63
+Temp C file: test_graphics_temp.c
+GCC command: gcc test_graphics_temp.c -o test_graphics.exe -lgdi32 -luser32
+GCC succeeded: test_graphics.exe
+Status: Success

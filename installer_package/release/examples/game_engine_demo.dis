@@ -1,0 +1,89 @@
+// Game Engine Demo - Complete game with physics and input
+print("=== Game Engine Demo ===\n");
+
+// Initialize game
+window_create("Game Engine Demo", 1024, 768);
+gl_init();
+set_projection_2d();
+set_clear_color(0.2, 0.3, 0.4, 1.0);
+
+// Game state
+float player_x = 400.0;
+float player_y = 300.0;
+float player_speed = 5.0;
+int score = 0;
+
+// Enemy positions
+float enemy1_x = 100.0;
+float enemy1_y = 100.0;
+float enemy2_x = 700.0;
+float enemy2_y = 500.0;
+
+print("Starting game loop...\n");
+
+// Main game loop
+for (frame = 0 to 1000) {
+    clear();
+    
+    // Update player position (simple AI movement)
+    player_x = player_x + (frame % 3 - 1) * player_speed;
+    player_y = player_y + ((frame / 2) % 3 - 1) * player_speed;
+    
+    // Keep player in bounds
+    if (player_x < 0) { player_x = 0; }
+    if (player_x > 1000) { player_x = 1000; }
+    if (player_y < 0) { player_y = 0; }
+    if (player_y > 750) { player_y = 750; }
+    
+    // Update enemies
+    enemy1_x = enemy1_x + 2.0;
+    if (enemy1_x > 1024) { enemy1_x = -50; }
+    
+    enemy2_y = enemy2_y - 1.5;
+    if (enemy2_y < -50) { enemy2_y = 800; }
+    
+    // Draw background grid
+    set_color(0.3, 0.3, 0.3);
+    for (i = 0 to 10) {
+        int grid_x = i * 100;
+        draw_line(grid_x, 0, grid_x, 768);
+    }
+    for (i = 0 to 8) {
+        int grid_y = i * 100;
+        draw_line(0, grid_y, 1024, grid_y);
+    }
+    
+    // Draw player (green circle)
+    set_color(0.0, 1.0, 0.0);
+    fill_circle(player_x, player_y, 20);
+    
+    // Draw enemies (red squares)
+    set_color(1.0, 0.0, 0.0);
+    fill_rect(enemy1_x, enemy1_y, 30, 30);
+    fill_rect(enemy2_x, enemy2_y, 25, 25);
+    
+    // Draw UI elements
+    set_color(1.0, 1.0, 1.0);
+    fill_rect(10, 10, 200, 30);  // Score background
+    
+    // 3D transformation demo
+    push_matrix();
+    translate(512.0, 384.0, 0.0);
+    rotate(frame * 2.0, 0.0, 0.0, 1.0);
+    set_color(1.0, 0.5, 0.0);
+    draw_quad(-25.0, -25.0, 50.0, 50.0);
+    pop_matrix();
+    
+    render();
+    
+    // Simple collision detection
+    float dx = player_x - enemy1_x;
+    float dy = player_y - enemy1_y;
+    if (dx * dx + dy * dy < 900) {  // 30^2 collision radius
+        score = score + 1;
+        enemy1_x = -100;  // Reset enemy
+    }
+}
+
+print("Game finished! Final score: " << score << "\n");
+print("Thanks for playing!\n");

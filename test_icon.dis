@@ -1,0 +1,3 @@
+// Test icon embedding
+print("Hello from Displexity!")
+print("This exe should have an icon!")

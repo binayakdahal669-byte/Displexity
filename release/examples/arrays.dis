@@ -1,0 +1,13 @@
+// Array example in DISP
+// Arrays work like: name[] = "string" where name[0] = first char
+
+message[] = "Hello"
+print message
+
+// Access individual characters
+print message[0]
+print message[1]
+
+// Modify array element
+message[0] = "J"
+print message

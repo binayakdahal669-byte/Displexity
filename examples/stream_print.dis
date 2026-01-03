@@ -1,0 +1,23 @@
+// Stream print and var type demo
+
+// Universal var type
+var c = "FF";
+
+// Stream print syntax
+int x = 42;
+str name = "World";
+
+print("Hello " << name << "!\n");
+print("x = " << x << "\n");
+
+// Convert string to hex
+decv = c >> hex;
+print("Hex value: " << decv << "\n");
+
+// Print in different bases
+decv >> bin;
+decv >> hex;
+decv >> oct;
+decv >> dec;
+
+print("Done!\n");

@@ -1,0 +1,63 @@
+// Displexity Audio Library Header
+// Sound, music, and audio processing
+
+// Audio system
+def audio_init() -> bool
+def audio_cleanup()
+
+// Sound functions
+def sound_load(str filename) -> int
+def sound_play(int sound_handle) -> bool
+def sound_stop(int sound_handle) -> bool
+def sound_pause(int sound_handle) -> bool
+def sound_resume(int sound_handle) -> bool
+def sound_set_volume(int sound_handle, float volume) -> bool
+def sound_set_pitch(int sound_handle, float pitch) -> bool
+def sound_is_playing(int sound_handle) -> bool
+
+// Music functions
+def music_load(str filename) -> int
+def music_play(int music_handle, bool should_loop) -> bool
+def music_stop(int music_handle) -> bool
+def music_pause(int music_handle) -> bool
+def music_resume(int music_handle) -> bool
+def music_set_volume(float volume) -> bool
+def music_fade_in(int music_handle, float duration) -> bool
+def music_fade_out(float duration) -> bool
+
+// Microphone functions
+def microphone_init() -> int
+def microphone_start_recording(int mic_handle) -> bool
+def microphone_stop_recording(int mic_handle) -> bool
+def microphone_get_data(int mic_handle) -> str
+
+// Audio generation
+def audio_generate_tone(float frequency, float duration, float volume) -> int
+def audio_generate_noise(float duration, float volume) -> int
+
+// Audio processing
+def audio_mix_sounds(int sound1, int sound2, float ratio) -> int
+def audio_apply_reverb(int sound_handle, float room_size, float damping) -> int
+def audio_apply_echo(int sound_handle, float delay, float decay) -> int
+def audio_apply_distortion(int sound_handle, float amount) -> int
+
+// Audio analysis
+def audio_get_spectrum(int sound_handle) -> str
+def audio_get_waveform(int sound_handle) -> str
+
+// File operations
+def audio_save_to_file(int sound_handle, str filename) -> bool
+
+// Global audio settings
+def audio_set_master_volume(float volume) -> bool
+def audio_get_master_volume() -> float
+
+// 3D audio
+def audio_set_listener_position(float x, float y, float z)
+def audio_set_sound_position(int sound_handle, float x, float y, float z)
+
+// Audio formats
+int AUDIO_FORMAT_WAV = 1
+int AUDIO_FORMAT_MP3 = 2
+int AUDIO_FORMAT_OGG = 3
+int AUDIO_FORMAT_FLAC = 4

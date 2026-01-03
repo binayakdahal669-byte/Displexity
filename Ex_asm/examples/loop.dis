@@ -1,0 +1,6 @@
+// Example 3: Loops
+i = 0;
+for (i = 0; i < 5) {
+    print "Loop iteration";
+    print "Loop iteration"
+}

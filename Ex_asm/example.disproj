@@ -1,0 +1,31 @@
+{
+  "name": "Displexity Demo Project",
+  "version": "1.0.0",
+  "description": "A sample Displexity project demonstrating all features",
+  "main": "src/main.dis",
+  "output": "build/demo.exe",
+  "target": "exe",
+  
+  "files": [
+    "src/main.dis",
+    "src/math.dis",
+    "src/utils.dis"
+  ],
+  
+  "libraries": [
+    "std.disll"
+  ],
+  
+  "compiler_options": {
+    "emit": "c",
+    "optimize": true,
+    "debug_info": true
+  },
+  
+  "build_commands": [
+    "disp src/main.dis -o build/main.c",
+    "gcc build/main.c -o build/demo.exe"
+  ],
+  
+  "dependencies": []
+}

@@ -1,0 +1,4 @@
+// HTTP request example in DISP
+print "Fetching data from httpbin.org..."
+http "https://httpbin.org/get" "GET" response
+print response

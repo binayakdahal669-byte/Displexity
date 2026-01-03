@@ -1,0 +1,100 @@
+#!/bin/bash
+# Displexity Library Manager
+# Manages .disll library files and dependencies
+
+set -e
+
+LIB_PATHS=(
+    "."
+    "./lib"
+    "/usr/local/lib/displexity"
+    "/usr/lib/displexity"
+)
+
+find_library() {
+    local libname=$1
+    
+    for path in "${LIB_PATHS[@]}"; do
+        if [ -f "$path/$libname.disll" ]; then
+            echo "$path/$libname.disll"
+            return 0
+        fi
+    done
+    
+    # Search all drives on Windows-like systems
+    if command -v find &> /dev/null; then
+        result=$(find / -name "$libname.disll" 2>/dev/null | head -1)
+        if [ ! -z "$result" ]; then
+            echo "$result"
+            return 0
+        fi
+    fi
+    
+    echo ""
+    return 1
+}
+
+list_libraries() {
+    echo "Available libraries:"
+    
+    for path in "${LIB_PATHS[@]}"; do
+        if [ -d "$path" ]; then
+            ls -1 "$path"/*.disll 2>/dev/null | sed 's/.*\//  - /' || true
+        fi
+    done
+}
+
+extract_symbols() {
+    local lib=$1
+    
+    if [ ! -f "$lib" ]; then
+        echo "Library not found: $lib"
+        return 1
+    fi
+    
+    echo "Symbols in $lib:"
+    # .disll is a text file with symbol definitions
+    grep "^func\|^class" "$lib" 2>/dev/null | cut -d' ' -f2 | sed 's/(.*//' | sed 's/{.*//'
+}
+
+create_library() {
+    local name=$1
+    local output=$2
+    
+    if [ -z "$output" ]; then
+        output="lib/$name.disll"
+    fi
+    
+    mkdir -p "$(dirname "$output")"
+    
+    echo "// Displexity Library: $name" > "$output"
+    echo "// Auto-generated library file" >> "$output"
+    echo "" >> "$output"
+    echo "Creating library: $output"
+}
+
+case "$1" in
+    find)
+        find_library "$2"
+        ;;
+    list)
+        list_libraries
+        ;;
+    symbols)
+        extract_symbols "$2"
+        ;;
+    create)
+        create_library "$2" "$3"
+        ;;
+    *)
+        echo "Displexity Library Manager"
+        echo ""
+        echo "Usage: disp-libmgr <command> [options]"
+        echo ""
+        echo "Commands:"
+        echo "  find <name>           Find library"
+        echo "  list                  List all libraries"
+        echo "  symbols <file>        Extract symbols from library"
+        echo "  create <name> [out]   Create new library"
+        ;;
+esac

@@ -1,0 +1,6 @@
+// Force Input System Test
+
+keypress key_result
+
+int key_state = is_key_pressed(65)
+print("Key state: " + key_state)

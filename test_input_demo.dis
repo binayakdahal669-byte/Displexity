@@ -1,0 +1,25 @@
+// Input System Demo
+print("=== Input System Demo ===")
+
+// Test mouse position
+int mouse_x = get_mouse_x()
+int mouse_y = get_mouse_y()
+print("Mouse position: " << mouse_x << ", " << mouse_y)
+
+// Test key states
+int space_pressed = is_key_pressed(32)
+if (space_pressed) {
+    print("SPACE key is currently pressed")
+} else {
+    print("SPACE key is not pressed")
+}
+
+// Test mouse buttons
+int left_mouse = is_mouse_pressed(0)
+if (left_mouse) {
+    print("Left mouse button is pressed")
+} else {
+    print("Left mouse button is not pressed")
+}
+
+print("=== Input Demo Complete ===")

@@ -1,0 +1,61 @@
+// math_src.dis - Math library source (compile to .disll)
+
+// Absolute value
+func abs(int x) {
+    if (x < 0) {
+        return 0 - x;
+    }
+    return x;
+}
+
+// Maximum of two values
+func max(int a, int b) {
+    if (a > b) {
+        return a;
+    }
+    return b;
+}
+
+// Minimum of two values
+func min(int a, int b) {
+    if (a < b) {
+        return a;
+    }
+    return b;
+}
+
+// Power function (base^exp)
+func power(int base, int exp) {
+    result = 1;
+    for (i = 0 to exp) {
+        result = result * base;
+    }
+    return result;
+}
+
+// Factorial
+func factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    result = 1;
+    for (i = 2 to n + 1) {
+        result = result * i;
+    }
+    return result;
+}
+
+// Fibonacci number
+func fib(int n) {
+    if (n <= 1) {
+        return n;
+    }
+    a = 0;
+    b = 1;
+    for (i = 2 to n + 1) {
+        temp = a + b;
+        a = b;
+        b = temp;
+    }
+    return b;
+}

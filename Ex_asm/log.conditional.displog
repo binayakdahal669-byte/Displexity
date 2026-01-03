@@ -1,0 +1,10 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-01 19:57:01
+Input: examples\conditional.dis
+Output: conditional.disp
+Mode: c
+Tokens: 14
+Temp C file: conditional_temp.c
+GCC succeeded: conditional.exe
+Created package: conditional.disp
+Status: Success

@@ -1,0 +1,60 @@
+// Working Input System Test
+
+window_create("Input Test", 800, 600)
+gl_init()
+set_projection_2d()
+
+print("Input Test Started - Use WASD keys and mouse")
+
+int running = 1
+while (running == 1) {
+    clear()
+    set_clear_color(0.1, 0.1, 0.2, 1.0)
+    
+    // Test keyboard input
+    if (is_key_pressed(87)) {  // W key
+        set_color(1.0, 0.0, 0.0)
+        fill_rect(100, 100, 50, 50)
+        print("W key pressed!")
+    }
+    
+    if (is_key_pressed(65)) {  // A key
+        set_color(0.0, 1.0, 0.0)
+        fill_rect(50, 150, 50, 50)
+        print("A key pressed!")
+    }
+    
+    if (is_key_pressed(83)) {  // S key
+        set_color(0.0, 0.0, 1.0)
+        fill_rect(100, 200, 50, 50)
+        print("S key pressed!")
+    }
+    
+    if (is_key_pressed(68)) {  // D key
+        set_color(1.0, 1.0, 0.0)
+        fill_rect(150, 150, 50, 50)
+        print("D key pressed!")
+    }
+    
+    // Test mouse input
+    int mouse_x = get_mouse_x()
+    int mouse_y = get_mouse_y()
+    
+    set_color(1.0, 1.0, 1.0)
+    fill_circle(mouse_x, mouse_y, 10)
+    
+    if (is_mouse_pressed(0)) {  // Left mouse button
+        set_color(1.0, 0.0, 1.0)
+        fill_circle(mouse_x, mouse_y, 20)
+        print("Left mouse button pressed!")
+    }
+    
+    // Check for ESC key to exit
+    if (is_key_pressed(27)) {  // ESC key
+        running = 0
+    }
+    
+    render()
+}
+
+print("Input test completed!")

@@ -1,0 +1,32 @@
+// Main game file - Multi-file project demo
+include "engine.dis"
+include "player.dis"
+include "enemies.dis"
+
+print("=== Multi-File Game Project ===\n");
+
+// Initialize game engine
+init_engine("Multi-File Game", 800, 600);
+
+// Initialize game objects
+init_player();
+init_enemies();
+
+print("Starting multi-file game...\n");
+
+// Main game loop
+for (frame = 0 to 500) {
+    start_frame();
+    
+    // Update game objects
+    update_player();
+    update_enemies();
+    
+    // Render everything
+    render_player();
+    render_enemies();
+    
+    end_frame();
+}
+
+print("Multi-file game complete!\n");

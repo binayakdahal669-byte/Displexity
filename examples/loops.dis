@@ -1,0 +1,21 @@
+// Loops example in DISP
+
+// While loop
+i = 0
+while (i < 5) {
+    print "While iteration"
+    i = i + 1
+}
+
+// For loop
+for (j = 0; 10) {
+    print "For iteration"
+}
+
+// Conditionals
+x = 15
+if (x > 10) {
+    print "x is greater than 10"
+} else {
+    print "x is 10 or less"
+}

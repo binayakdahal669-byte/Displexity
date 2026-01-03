@@ -1,0 +1,3 @@
+@echo off
+echo Starting Displexity IDE (Neovide)...
+neovide -- -u "%~dp0nvim\init.lua" %*

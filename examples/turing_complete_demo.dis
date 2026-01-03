@@ -1,0 +1,92 @@
+// Turing Complete Demo - Shows computational completeness
+// This demonstrates: loops, conditionals, recursion, memory manipulation, I/O
+
+print("=== Turing Completeness Demo ===")
+
+// 1. Fibonacci (recursion)
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n-1) + fib(n-2)
+
+// 2. Prime checker (loops + conditionals)
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, n//2 + 1):
+        if n % i == 0:
+            return False
+    return True
+// 3. Bubble sort (array manipulation)
+def bubble_sort(arr, size):
+    for i in range(size):
+        for j in range(size - i - 1):
+            if arr[j] > arr[j+1]:
+                temp = arr[j]
+                arr[j] = arr[j+1]
+                arr[j+1] = temp
+
+// 4. Turing machine simulation (state machine)
+def turing_machine():
+    tape = ["0","0","1","1","0","0","1","1","0"]  # Binary tape
+    head = 0               # Tape head position
+    state = 0              # Current state
+    
+    print("Simulating Turing Machine...")
+    
+    for step in range(20):
+        current = tape[head]
+        print(f"Step {step}: State={state} Head={head} Symbol={current}")
+        
+        # State transition rules
+        if state == 0:
+            if current == "0":
+                tape[head] = "1"
+                head = head + 1
+                state = 1
+            else:
+                head = head + 1
+                state = 0
+        elif state == 1:
+            if current == "1":
+                tape[head] = "0"
+                head = head - 1
+                state = 0
+            else:
+                head = head + 1
+                state = 1
+        
+        # Bounds check
+        if head < 0:
+            head = 0
+        if head >= 9:
+            head = 8
+// Main program
+print("Testing Fibonacci...")
+for i in range(10):
+    print(f"fib({i}) = {fib(i)}")
+
+print("\nTesting Prime Numbers...")
+for i in range(2, 20):
+    if is_prime(i):
+        print(f"{i} is prime")
+
+print("\nTesting Array Sort...")
+numbers = [64, 34, 25, 12, 22, 11, 90]
+bubble_sort(numbers, 7)
+print("Sorted: ", end="")
+for i in range(7):
+    print(numbers[i], end=" ")
+print()
+
+print("\nRunning Turing Machine...")
+turing_machine()
+
+print("\n=== Turing Completeness Proven! ===")
+print("This language can:")
+print("- Perform arbitrary computation (recursion)")
+print("- Manipulate unbounded memory (arrays)")
+print("- Make decisions (conditionals)")
+print("- Loop indefinitely (while/for)")
+print("- Simulate other computers (Turing machine)")
+print("\nTherefore: GTA 69 is theoretically possible!")

@@ -1,0 +1,29 @@
+// New Python+C hybrid syntax demo
+
+// Variable declarations (C-style)
+int x = 42;
+float pi = 3.14;
+str name = "DISP";
+bool flag = 1;
+
+// Print values
+print "=== Variable Declarations ==="
+print x
+print name
+
+// Python-style input
+input(x, "Enter a number: ");
+print x
+
+// Format output - print in different bases
+print "=== Format Output ==="
+x >> hex;
+x >> bin;
+x >> oct;
+x >> dec;
+
+// Type conversion
+float << x;
+print "Converted to float"
+
+print "Done!"

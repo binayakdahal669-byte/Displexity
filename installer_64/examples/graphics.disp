@@ -1,0 +1,17 @@
+// Graphics programming in DISP
+function main() {
+    // Clear screen
+    clear();
+    
+    // Draw some pixels
+    draw_pixel();
+    
+    // Simple graphics loop
+    i = 0;
+    while (i < 100) {
+        draw_pixel();
+        i = i + 1;
+    }
+    
+    return 0;
+}

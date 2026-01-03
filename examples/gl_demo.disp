@@ -1,0 +1,29 @@
+// DISP OpenGL-like Demo
+function main() {
+    print("DISP GL Demo Starting...");
+    
+    // Initialize GL-like system
+    gl_init();
+    
+    // Create window
+    window_create(800, 600, "DISP GL Demo");
+    
+    // Main render loop
+    running = 1;
+    while (running) {
+        // Clear screen
+        gl_clear();
+        
+        // Render frame
+        render();
+        
+        // Check for exit key
+        key = get_keypress();
+        if (key == 27) {  // ESC
+            running = 0;
+        }
+    }
+    
+    print("GL Demo finished");
+    return 0;
+}

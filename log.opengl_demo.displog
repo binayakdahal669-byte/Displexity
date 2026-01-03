@@ -1,0 +1,9 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-02 08:56:26
+Input: examples\opengl_demo.dis
+Output: opengl_demo.exe
+Mode: c
+Tokens: 148
+Temp C file: opengl_demo_temp.c
+GCC succeeded: opengl_demo.exe
+Status: Success
