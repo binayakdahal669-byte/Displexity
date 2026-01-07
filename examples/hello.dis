@@ -1,2 +1,7 @@
-// Hello World in DISP
-print "Hello, DISP World!"
+// Hello World - Displexity Example
+print("Hello, World!")
+print("Welcome to Displexity!")
+
+int x = 42
+print("The answer is: ")
+print(x)

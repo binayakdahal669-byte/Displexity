@@ -14,7 +14,8 @@ enum class TokenType {
     INT, FLOAT, STRING, TRUE, FALSE,
     // Keywords
     PRINT, INPUT, IF, ELSE, WHILE, FOR, FUNC, CLASS, RETURN, INCLUDE, ARRAY,
-    HTTP, KEYPRESS, HOTKEY, AI, GRAPHICS, CLEAR, DRAW, RENDER, WINDOW,
+    HTTP, KEYPRESS, HOTKEY, AI, GRAPHICS, CLEAR, DRAW, RENDER, WINDOW, FROM,
+    FOR_THIS_USE_ICON, LOAD_IMAGE, DRAW_IMAGE, LOAD_SOUND, PLAY_SOUND, STOP_SOUND,
     GL_INIT, SET_COLOR, SET_CLEAR_COLOR, DRAW_TRIANGLE, DRAW_QUAD, FILL_RECT, 
     DRAW_CIRCLE, FILL_CIRCLE, SET_PROJECTION_2D, SET_PROJECTION_3D,
     TRANSLATE, ROTATE, SCALE, PUSH_MATRIX, POP_MATRIX, WINDOW_SHOULD_CLOSE,
@@ -205,6 +206,20 @@ private:
         if (value == "include") return makeToken(TokenType::INCLUDE, value);
         if (value == "import") return makeToken(TokenType::INCLUDE, value);
         if (value == "use") return makeToken(TokenType::INCLUDE, value);
+        if (value == "from") return makeToken(TokenType::FROM, value);
+        if (value == "for_this_use_icon") return makeToken(TokenType::FOR_THIS_USE_ICON, value);
+        if (value == "set_icon") return makeToken(TokenType::FOR_THIS_USE_ICON, value);
+        if (value == "app_icon") return makeToken(TokenType::FOR_THIS_USE_ICON, value);
+        if (value == "load_image") return makeToken(TokenType::LOAD_IMAGE, value);
+        if (value == "image") return makeToken(TokenType::LOAD_IMAGE, value);
+        if (value == "draw_image") return makeToken(TokenType::DRAW_IMAGE, value);
+        if (value == "blit") return makeToken(TokenType::DRAW_IMAGE, value);
+        if (value == "load_sound") return makeToken(TokenType::LOAD_SOUND, value);
+        if (value == "sound") return makeToken(TokenType::LOAD_SOUND, value);
+        if (value == "audio") return makeToken(TokenType::LOAD_SOUND, value);
+        if (value == "play_sound") return makeToken(TokenType::PLAY_SOUND, value);
+        if (value == "play") return makeToken(TokenType::PLAY_SOUND, value);
+        if (value == "stop_sound") return makeToken(TokenType::STOP_SOUND, value);
         if (value == "true") return makeToken(TokenType::TRUE, value);
         if (value == "yes") return makeToken(TokenType::TRUE, value);
         if (value == "false") return makeToken(TokenType::FALSE, value);

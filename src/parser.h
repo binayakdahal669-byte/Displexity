@@ -263,6 +263,20 @@ private:
             return std::make_shared<GraphicsStmt>("window_should_close");
         } else if (match(TokenType::INCLUDE)) {
             return parseInclude();
+        } else if (match(TokenType::FROM)) {
+            return parseFromInclude();
+        } else if (match(TokenType::FOR_THIS_USE_ICON)) {
+            return parseIconStmt();
+        } else if (match(TokenType::LOAD_IMAGE)) {
+            return parseLoadImage();
+        } else if (match(TokenType::DRAW_IMAGE)) {
+            return parseDrawImage();
+        } else if (match(TokenType::LOAD_SOUND)) {
+            return parseLoadSound();
+        } else if (match(TokenType::PLAY_SOUND)) {
+            return parsePlaySound();
+        } else if (match(TokenType::STOP_SOUND)) {
+            return parseStopSound();
         } else if (check(TokenType::IDENT)) {
             return parseAssignmentOrExpr();
         }
@@ -366,6 +380,148 @@ private:
         expect(TokenType::STRING, "Expected string path after include");
         match(TokenType::SEMICOLON);
         return std::make_shared<IncludeStmt>(path);
+    }
+
+    // Parse: from "path" include func1, func2, ...
+    // Or: from <path> include func
+    StmtPtr parseFromInclude() {
+        std::string path;
+        
+        // Check for <path> or "path" syntax
+        if (match(TokenType::LT)) {
+            // from <path> include ...
+            while (!check(TokenType::GT) && !check(TokenType::END_OF_FILE)) {
+                path += peek().lexeme;
+                advance();
+            }
+            expect(TokenType::GT, "Expected '>' after path");
+        } else if (check(TokenType::STRING)) {
+            path = peek().lexeme;
+            advance();
+        } else {
+            addError("Expected path after 'from'");
+            return nullptr;
+        }
+        
+        // Expect 'include' keyword
+        if (!check(TokenType::INCLUDE) && !(check(TokenType::IDENT) && peek().lexeme == "include")) {
+            addError("Expected 'include' after path");
+            return nullptr;
+        }
+        advance();
+        
+        // Parse symbol list
+        std::vector<std::string> symbols;
+        do {
+            if (check(TokenType::IDENT)) {
+                symbols.push_back(peek().lexeme);
+                advance();
+            }
+        } while (match(TokenType::COMMA));
+        
+        match(TokenType::SEMICOLON);
+        return std::make_shared<FromIncludeStmt>(path, symbols);
+    }
+
+    // Parse: for_this_use_icon("path.ico")
+    StmtPtr parseIconStmt() {
+        expect(TokenType::LPAREN, "Expected '(' after for_this_use_icon");
+        std::string iconPath;
+        if (check(TokenType::STRING)) {
+            iconPath = peek().lexeme;
+            advance();
+        } else {
+            addError("Expected icon path string");
+        }
+        expect(TokenType::RPAREN, "Expected ')'");
+        match(TokenType::SEMICOLON);
+        return std::make_shared<IconStmt>(iconPath);
+    }
+
+    // Parse: load_image("path", x, y, w, h, sx, sy, sw, sh) - like ctx.drawImage 9-arg
+    StmtPtr parseLoadImage() {
+        expect(TokenType::LPAREN, "Expected '(' after load_image");
+        std::string path;
+        if (check(TokenType::STRING)) {
+            path = peek().lexeme;
+            advance();
+        }
+        
+        std::vector<ExprPtr> args;
+        while (match(TokenType::COMMA)) {
+            args.push_back(parseExpression());
+        }
+        expect(TokenType::RPAREN, "Expected ')'");
+        match(TokenType::SEMICOLON);
+        
+        auto expr = std::make_shared<LoadImageExpr>(path, args);
+        return std::make_shared<Assignment>("_img", expr);
+    }
+
+    // Parse: draw_image(img, dx, dy, dw, dh, sx, sy, sw, sh)
+    StmtPtr parseDrawImage() {
+        std::vector<ExprPtr> args;
+        expect(TokenType::LPAREN, "Expected '('");
+        while (!check(TokenType::RPAREN) && !check(TokenType::END_OF_FILE)) {
+            args.push_back(parseExpression());
+            if (!check(TokenType::RPAREN)) {
+                if (!match(TokenType::COMMA)) break;
+            }
+        }
+        expect(TokenType::RPAREN, "Expected ')'");
+        match(TokenType::SEMICOLON);
+        return std::make_shared<GraphicsStmt>("draw_image", args);
+    }
+
+    // Parse: load_sound("path")
+    StmtPtr parseLoadSound() {
+        expect(TokenType::LPAREN, "Expected '('");
+        std::string path;
+        if (check(TokenType::STRING)) {
+            path = peek().lexeme;
+            advance();
+        }
+        expect(TokenType::RPAREN, "Expected ')'");
+        
+        std::string resultVar = "";
+        if (check(TokenType::IDENT)) {
+            resultVar = peek().lexeme;
+            advance();
+        }
+        match(TokenType::SEMICOLON);
+        
+        auto expr = std::make_shared<SoundExpr>("load", path);
+        return std::make_shared<Assignment>(resultVar.empty() ? "_snd" : resultVar, expr);
+    }
+
+    // Parse: play_sound(id) or play_sound(id, volume, loop)
+    StmtPtr parsePlaySound() {
+        std::vector<ExprPtr> args;
+        expect(TokenType::LPAREN, "Expected '('");
+        while (!check(TokenType::RPAREN) && !check(TokenType::END_OF_FILE)) {
+            args.push_back(parseExpression());
+            if (!check(TokenType::RPAREN)) {
+                if (!match(TokenType::COMMA)) break;
+            }
+        }
+        expect(TokenType::RPAREN, "Expected ')'");
+        match(TokenType::SEMICOLON);
+        return std::make_shared<GraphicsStmt>("play_sound", args);
+    }
+
+    // Parse: stop_sound(id)
+    StmtPtr parseStopSound() {
+        std::vector<ExprPtr> args;
+        expect(TokenType::LPAREN, "Expected '('");
+        while (!check(TokenType::RPAREN) && !check(TokenType::END_OF_FILE)) {
+            args.push_back(parseExpression());
+            if (!check(TokenType::RPAREN)) {
+                if (!match(TokenType::COMMA)) break;
+            }
+        }
+        expect(TokenType::RPAREN, "Expected ')'");
+        match(TokenType::SEMICOLON);
+        return std::make_shared<GraphicsStmt>("stop_sound", args);
     }
 
     StmtPtr parseGraphicsFunction(const std::string& cmd) {

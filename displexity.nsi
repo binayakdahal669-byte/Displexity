@@ -2,7 +2,7 @@
 ; Complete installation with icons, IDE, libraries, and environment setup
 
 !define PRODUCT_NAME "Displexity"
-!define PRODUCT_VERSION "1.0.0"
+!define PRODUCT_VERSION "1.2.0"
 !define PRODUCT_PUBLISHER "Displexity Team"
 !define PRODUCT_WEB_SITE "https://github.com/displexity"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -38,7 +38,7 @@ InstallDir "$PROGRAMFILES64\Displexity"
 ShowInstDetails show
 RequestExecutionLevel admin
 
-VIProductVersion "1.0.0.0"
+VIProductVersion "1.2.0.0"
 VIAddVersionKey "ProductName" "${PRODUCT_NAME}"
 VIAddVersionKey "CompanyName" "${PRODUCT_PUBLISHER}"
 VIAddVersionKey "LegalCopyright" "© 2026 ${PRODUCT_PUBLISHER}"
@@ -52,8 +52,19 @@ Section "!Compiler (Required)" SEC_COMPILER
   SectionIn RO
   SetOutPath "$INSTDIR\bin"
   
-  ; Main compiler
+  ; Main compiler and aliases
   File "release\bin\disp.exe"
+  File "release\bin\dis.exe"
+  File "release\bin\dih.exe"
+  File "release\bin\di.exe"
+  File "release\bin\dcm.exe"
+  File "release\bin\dcom.exe"
+  
+  ; ISO builder and aliases
+  File /nonfatal "release\bin\iso_builder.exe"
+  File /nonfatal "release\bin\isom.exe"
+  File /nonfatal "release\bin\isob.exe"
+  File /nonfatal "release\bin\bootgen.exe"
   
   ; Icons
   SetOutPath "$INSTDIR\resources"
@@ -76,6 +87,8 @@ Section "Standard Libraries" SEC_LIBS
   File "release\lib\displexity\network.disll"
   File "release\lib\displexity\audio.disll"
   File "release\lib\displexity\crypto.disll"
+  File "release\lib\displexity\window.disll"
+  File "release\lib\displexity\tui.disll"
   
   ; Headers
   SetOutPath "$INSTDIR\include\displexity"
@@ -85,6 +98,8 @@ Section "Standard Libraries" SEC_LIBS
   File "release\include\displexity\network.dish"
   File "release\include\displexity\audio.dish"
   File "release\include\displexity\crypto.dish"
+  File "release\include\displexity\window.dish"
+  File "release\include\displexity\tui.dish"
 SectionEnd
 
 ;-----------------------------------------
@@ -113,23 +128,41 @@ Section "IDE Configuration" SEC_IDE
   SetOutPath "$INSTDIR\bin"
   File /nonfatal "gui_ide\dispe.exe"
   
-  ; Create Neovide launcher (dispe.bat) - runs with smooth cursor
+  ; Create all IDE launcher aliases
   FileOpen $0 "$INSTDIR\bin\dispe.bat" w
   FileWrite $0 "@echo off$\r$\n"
-  FileWrite $0 "echo Starting Displexity IDE (Neovide)...$\r$\n"
   FileWrite $0 "neovide -- -u $\"%~dp0nvim\init.lua$\" %*$\r$\n"
   FileClose $0
   
-  ; Create plain nvim launcher (dispnvim.bat)
+  FileOpen $0 "$INSTDIR\bin\dihe.bat" w
+  FileWrite $0 "@echo off$\r$\n"
+  FileWrite $0 "neovide -- -u $\"%~dp0nvim\init.lua$\" %*$\r$\n"
+  FileClose $0
+  
+  FileOpen $0 "$INSTDIR\bin\ce.bat" w
+  FileWrite $0 "@echo off$\r$\n"
+  FileWrite $0 "neovide -- -u $\"%~dp0nvim\init.lua$\" %*$\r$\n"
+  FileClose $0
+  
+  FileOpen $0 "$INSTDIR\bin\cod.bat" w
+  FileWrite $0 "@echo off$\r$\n"
+  FileWrite $0 "neovide -- -u $\"%~dp0nvim\init.lua$\" %*$\r$\n"
+  FileClose $0
+  
+  FileOpen $0 "$INSTDIR\bin\ed.bat" w
+  FileWrite $0 "@echo off$\r$\n"
+  FileWrite $0 "neovide -- -u $\"%~dp0nvim\init.lua$\" %*$\r$\n"
+  FileClose $0
+  
+  FileOpen $0 "$INSTDIR\bin\edit.bat" w
+  FileWrite $0 "@echo off$\r$\n"
+  FileWrite $0 "neovide -- -u $\"%~dp0nvim\init.lua$\" %*$\r$\n"
+  FileClose $0
+  
+  ; Plain nvim launcher
   FileOpen $0 "$INSTDIR\bin\dispnvim.bat" w
   FileWrite $0 "@echo off$\r$\n"
   FileWrite $0 "nvim -u $\"%~dp0nvim\init.lua$\" %*$\r$\n"
-  FileClose $0
-  
-  ; Create admin terminal launcher for IDE
-  FileOpen $0 "$INSTDIR\bin\dispe_admin.bat" w
-  FileWrite $0 "@echo off$\r$\n"
-  FileWrite $0 "powershell -Command $\"Start-Process neovide -ArgumentList '-- -u %~dp0nvim\init.lua' -Verb RunAs$\"$\r$\n"
   FileClose $0
 SectionEnd
 
@@ -157,6 +190,12 @@ Section "Documentation" SEC_DOCS
   File "release\docs\API_REFERENCE.md"
   File "release\docs\STDLIB.md"
   File "release\docs\GAME_DEV.md"
+  
+  ; HTML Documentation
+  SetOutPath "$INSTDIR\docs\html"
+  File "release\docs\html\index.html"
+  File "release\docs\html\style.css"
+  File "release\docs\html\script.js"
 SectionEnd
 
 ;-----------------------------------------
@@ -278,6 +317,21 @@ Section -Post
   WriteRegStr HKCR "Displexity.Log\DefaultIcon" "" '"$INSTDIR\resources\ide.ico"'
   WriteRegStr HKCR "Displexity.Log\shell\open\command" "" 'notepad.exe "%1"'
   
+  ; .tui TUI bytecode files
+  WriteRegStr HKCR ".tui" "" "Displexity.TUI"
+  WriteRegStr HKCR "Displexity.TUI" "" "Displexity TUI Executable"
+  WriteRegStr HKCR "Displexity.TUI\DefaultIcon" "" '"$INSTDIR\resources\runner.ico"'
+  WriteRegStr HKCR "Displexity.TUI\shell" "" "open"
+  WriteRegStr HKCR "Displexity.TUI\shell\open" "" "Run"
+  WriteRegStr HKCR "Displexity.TUI\shell\open\command" "" '"$INSTDIR\bin\disp.exe" run "%1"'
+  
+  ; .tuy TUI header files
+  WriteRegStr HKCR ".tuy" "" "Displexity.TUIHeader"
+  WriteRegStr HKCR "Displexity.TUIHeader" "" "Displexity TUI Header File"
+  WriteRegStr HKCR "Displexity.TUIHeader\DefaultIcon" "" '"$INSTDIR\resources\disp.ico"'
+  WriteRegStr HKCR "Displexity.TUIHeader\shell\edit" "" "Edit"
+  WriteRegStr HKCR "Displexity.TUIHeader\shell\edit\command" "" 'notepad.exe "%1"'
+  
   ; Refresh icon cache
   System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
   
@@ -381,11 +435,15 @@ Section Uninstall
   DeleteRegKey HKCR ".disll"
   DeleteRegKey HKCR ".disp"
   DeleteRegKey HKCR ".displog"
+  DeleteRegKey HKCR ".tui"
+  DeleteRegKey HKCR ".tuy"
   DeleteRegKey HKCR "Displexity.Source"
   DeleteRegKey HKCR "Displexity.Header"
   DeleteRegKey HKCR "Displexity.Library"
   DeleteRegKey HKCR "Displexity.Package"
   DeleteRegKey HKCR "Displexity.Log"
+  DeleteRegKey HKCR "Displexity.TUI"
+  DeleteRegKey HKCR "Displexity.TUIHeader"
   
   ; Refresh icon cache
   System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'

@@ -1,0 +1,49 @@
+// Displexity TUI (Terminal User Interface) Library Header
+// Console-based UI components
+
+// Screen management
+def clearScreen()
+def setCursorPosition(int x, int y)
+def hideCursor()
+def showCursor()
+def getTerminalWidth() -> int
+def getTerminalHeight() -> int
+
+// Colors (ANSI)
+def setForegroundColor(int color)
+def setBackgroundColor(int color)
+def resetColors()
+
+// Text output
+def printAt(int x, int y, str text)
+def printBox(int x, int y, int width, int height)
+def printHLine(int x, int y, int length)
+def printVLine(int x, int y, int length)
+
+// Input
+def getKey() -> int
+def getKeyNonBlocking() -> int
+def isKeyPressed() -> bool
+
+// UI Components
+def drawButton(int x, int y, str label)
+def drawProgressBar(int x, int y, int width, int progress)
+def drawMenu(int x, int y, str items)
+
+// Color constants
+int BLACK = 0
+int RED = 1
+int GREEN = 2
+int YELLOW = 3
+int BLUE = 4
+int MAGENTA = 5
+int CYAN = 6
+int WHITE = 7
+int BRIGHT_BLACK = 8
+int BRIGHT_RED = 9
+int BRIGHT_GREEN = 10
+int BRIGHT_YELLOW = 11
+int BRIGHT_BLUE = 12
+int BRIGHT_MAGENTA = 13
+int BRIGHT_CYAN = 14
+int BRIGHT_WHITE = 15

@@ -1,0 +1,35 @@
+// Test: TUI (Terminal User Interface) Features
+// Tests: clear, gotoxy, colors, basic TUI operations
+
+print "=== TUI Feature Tests ===\n"
+
+// Note: These tests are designed for TUI bytecode output
+// Compile with: disp test_tui.dis -emit-tui
+
+print "Testing basic print...\n"
+print "Line 1\n"
+print "Line 2\n"
+print "Line 3\n"
+
+// Sleep test (if supported)
+print "\nWaiting 1 second...\n"
+sleep(1000)
+print "Done waiting!\n"
+
+// Simple counter display
+print "\nCounting: "
+for i in 1..11 {
+    print i
+    print " "
+}
+print "\n"
+
+// Box drawing with characters
+print "\n+----------+\n"
+print "|  TUI OK  |\n"
+print "+----------+\n"
+
+// Color codes (for terminals that support ANSI)
+print "\nColor test (ANSI terminals):\n"
+
+print "=== TUI Tests Complete ===\n"

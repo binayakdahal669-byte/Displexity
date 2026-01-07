@@ -1,0 +1,86 @@
+// Test: Control Flow
+// Tests: if/elif/else, while, for loops
+
+print "=== Control Flow Tests ===\n"
+
+// If statement test
+int score = 85
+
+print "Score: "
+print score
+print "\n"
+
+if score >= 90 {
+    print "Grade: A\n"
+} elif score >= 80 {
+    print "Grade: B\n"
+} elif score >= 70 {
+    print "Grade: C\n"
+} else {
+    print "Grade: F\n"
+}
+
+// While loop test
+print "\nWhile loop (count to 5):\n"
+int count = 1
+while count <= 5 {
+    print count
+    print " "
+    count = count + 1
+}
+print "\n"
+
+// For loop test
+print "\nFor loop (0 to 4):\n"
+for i in 0..5 {
+    print i
+    print " "
+}
+print "\n"
+
+// Nested loops
+print "\nNested loops (multiplication table 3x3):\n"
+for i in 1..4 {
+    for j in 1..4 {
+        int result = i * j
+        print result
+        print "\t"
+    }
+    print "\n"
+}
+
+// Boolean conditions
+bool isEven = true
+if isEven {
+    print "\nBoolean test: isEven is true\n"
+}
+
+// Comparison operators
+int a = 5
+int b = 10
+
+if a < b {
+    print "a < b: true\n"
+}
+
+if b > a {
+    print "b > a: true\n"
+}
+
+if a <= 5 {
+    print "a <= 5: true\n"
+}
+
+if b >= 10 {
+    print "b >= 10: true\n"
+}
+
+if a is 5 {
+    print "a is 5: true\n"
+}
+
+if a isnt 10 {
+    print "a isnt 10: true\n"
+}
+
+print "\n=== All Control Flow Tests Passed ==="

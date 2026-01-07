@@ -13,6 +13,9 @@
 #include "armgen.h"
 #include "riscvgen.h"
 #include "wasmgen.h"
+#include "tuigen.h"
+#include "tuiruntime.h"
+#include "ctranspile.h"
 #include <ctime>
 #include <iomanip>
 #include <filesystem>
@@ -560,13 +563,21 @@ int main(int argc, char** argv) {
         return handleConfig(argc, argv);
     }
     if (firstArg == "run" && argc > 2) {
-        // disp run file.disp - extract and run
+        // disp run file.disp/.tui - extract and run
         try {
-            string dispFile = argv[2];
-            string tmpExe = removeExtension(dispFile) + "_tmp_run.exe";
-            DispPackage::extract(dispFile, tmpExe);
-            int ret = system(tmpExe.c_str());
+            string runFile = argv[2];
             namespace fs = std::filesystem;
+            string ext = fs::path(runFile).extension().string();
+            
+            // Handle .tui files with TUI runtime
+            if (ext == ".tui") {
+                return TuiRuntime::runFile(runFile);
+            }
+            
+            // Handle .disp files
+            string tmpExe = removeExtension(runFile) + "_tmp_run.exe";
+            DispPackage::extract(runFile, tmpExe);
+            int ret = system(tmpExe.c_str());
             try { fs::remove(tmpExe); } catch (...) {}
             return ret >> 8;
         } catch (const exception &e) {
@@ -575,33 +586,67 @@ int main(int argc, char** argv) {
         }
     }
     
+    // Handle C to Displexity transpilation
+    if (firstArg == "transpile" && argc > 2) {
+        string cFile = argv[2];
+        string outputFile = argc > 4 && string(argv[3]) == "-o" ? argv[4] : 
+                           removeExtension(cFile) + ".dis";
+        
+        string result = CTranspiler::transpileFile(cFile);
+        ofstream out(outputFile);
+        if (!out) {
+            cerr << "Error: Cannot write to " << outputFile << "\n";
+            return 1;
+        }
+        out << result;
+        out.close();
+        cout << "Transpiled: " << cFile << " -> " << outputFile << "\n";
+        return 0;
+    }
+    
     string inputFile;
     vector<string> inputFiles;  // Additional input files for multi-file compilation
+    vector<string> linkLibraries;  // Libraries to link (-l flag)
     string outputFile;
     string emitMode = "c";  // c, asm, exe, disp, bare-asm
     bool verbose = false;
     string logFileOverride;
+    bool noLog = false;  // -no-log flag
 
     auto printHelp = [&]() {
-        cout << "disp - Displexity Language Compiler\n\n";
+        cout << "disp - Displexity Language Compiler v1.2.0-0d1\n\n";
         cout << "Usage: disp <input.dis> [options]\n\n";
         cout << "Compile Commands:\n";
-        cout << "  -o <file>              Output file (default: input.exe)\n";
+        cout << "  -o <file>              Output file (default: .disp package)\n";
         cout << "  -emit-c                Emit C source only (do not compile)\n";
         cout << "  -emit-exe              Emit native executable (auto-compiles via GCC)\n";
-        cout << "  -emit-asm              Emit x86-64 assembly (not yet fully implemented)\n";
-        cout << "  -emit-disp             Emit .disp package (bundled executable)\n";
+        cout << "  -emit-disp             Emit .disp package (bundled executable) [DEFAULT]\n";
+        cout << "  -emit-tui              Emit TUI bytecode executable (.tui)\n";
+        cout << "  -emit-asm              Emit x86-64 assembly\n";
         cout << "  -bare-asm              Emit bare-metal x86 assembly for BIOS/boot\n";
         cout << "  -emit-arm              Emit ARM64 (aarch64) assembly\n";
         cout << "  -emit-riscv            Emit RISC-V RV64I assembly\n";
         cout << "  -emit-wasm             Emit WebAssembly text format (.wat)\n";
         cout << "  -emit-lib              Emit binary library (.disll)\n";
+        cout << "\nCross-Platform Targets:\n";
+        cout << "  -emit-linux            Cross-compile to Linux ELF executable\n";
+        cout << "  -emit-linux-deb        Generate Debian .deb package\n";
+        cout << "  -emit-linux-tar        Generate Linux .tar.gz archive\n";
+        cout << "  -emit-macos            Cross-compile to macOS Mach-O executable\n";
+        cout << "  -emit-ios              Generate iOS .ipa package\n";
+        cout << "  -emit-apk              Generate Android APK\n";
+        cout << "  -emit-win              Cross-compile to Windows PE executable\n";
+        cout << "\nOther Options:\n";
+        cout << "  -l<lib.disll>          Link a library file\n";
         cout << "  --log <file>           Write compilation log to given file\n";
-        cout << "  -v, --verbose          Increase output verbosity\n";
+        cout << "  -no-log                Disable log file generation\n";
+        cout << "  --verbose              Increase output verbosity\n";
         cout << "\nSpecial Commands:\n";
         cout << "  disp activate          Add disp to PATH and enable auto-startup\n";
         cout << "  disp config [key val]  Get/set configuration (e.g., search paths)\n";
         cout << "  disp run file.disp     Extract and execute a .disp package\n";
+        cout << "  disp run file.tui      Execute a TUI bytecode file\n";
+        cout << "  disp transpile file.c  Convert C source to Displexity\n";
         cout << "  disp --help            Show this help\n";
         cout << "  disp --version         Show version\n";
         cout << "\nFile Extensions:\n";
@@ -609,12 +654,17 @@ int main(int argc, char** argv) {
         cout << "  .dish                  Displexity header file\n";
         cout << "  .disll                 Displexity library file\n";
         cout << "  .disp                  Displexity executable/package (binary format)\n";
+        cout << "  .tui                   TUI bytecode executable (cross-platform)\n";
+        cout << "  .tuy                   TUI header file\n";
         cout << "\nExamples:\n";
-        cout << "  disp hello.dis                         -> hello.exe\n";
-        cout << "  disp hello.dis -o hello.disp           -> hello.disp (packaged)\n";
-        cout << "  disp main.dis lib.dis -o app.exe       -> multi-file compilation\n";
+        cout << "  disp hello.dis                         -> hello.disp (default)\n";
+        cout << "  disp hello.dis -emit-exe               -> hello.exe\n";
+        cout << "  disp hello.dis -emit-tui               -> hello.tui\n";
         cout << "  disp hello.dis -emit-c -o hello.c      -> hello.c (C only)\n";
+        cout << "  disp main.dis lib.dis -o app.disp      -> multi-file compilation\n";
         cout << "  disp run hello.disp                    -> extract and run\n";
+        cout << "  disp run hello.tui                     -> run TUI bytecode\n";
+        cout << "  disp transpile hello.c -o hello.dis    -> C to Displexity\n";
         cout << "  disp activate                          -> add to PATH\n";
         cout << "\nIDE: Run 'dispe' for the Neovim-based IDE\n";
         cout << "Log file: log.<basename>.displog (or use --log)\n";
@@ -628,18 +678,23 @@ int main(int argc, char** argv) {
             return 0;
         }
 
-        if (arg == "--version") {
-            cout << "disp 0.1.0\n";
+        if (arg == "--version" || arg == "-v") {
+            cout << "disp 1.2.0-0d1\n";
             return 0;
         }
 
-        if ((arg == "-v") || (arg == "--verbose")) {
+        if (arg == "--verbose") {
             verbose = true;
             continue;
         }
 
         if (arg == "--log" && i + 1 < argc) {
             logFileOverride = argv[++i];
+            continue;
+        }
+        
+        if (arg == "-no-log" || arg == "--no-log") {
+            noLog = true;
             continue;
         }
 
@@ -652,11 +707,32 @@ int main(int argc, char** argv) {
         if (arg == "-emit-asm") { emitMode = "asm"; continue; }
         if (arg == "-emit-exe") { emitMode = "exe"; continue; }
         if (arg == "-emit-disp") { emitMode = "disp"; continue; }
+        if (arg == "-emit-tui") { emitMode = "tui"; continue; }
         if (arg == "-bare-asm") { emitMode = "bare-asm"; continue; }
         if (arg == "-emit-arm") { emitMode = "arm"; continue; }
         if (arg == "-emit-riscv") { emitMode = "riscv"; continue; }
         if (arg == "-emit-wasm") { emitMode = "wasm"; continue; }
         if (arg == "-emit-lib") { emitMode = "lib"; continue; }
+        // Cross-platform targets
+        if (arg == "-emit-linux") { emitMode = "linux"; continue; }
+        if (arg == "-emit-linux-deb") { emitMode = "linux-deb"; continue; }
+        if (arg == "-emit-linux-tar") { emitMode = "linux-tar"; continue; }
+        if (arg == "-emit-macos") { emitMode = "macos"; continue; }
+        if (arg == "-emit-ios") { emitMode = "ios"; continue; }
+        if (arg == "-emit-apk") { emitMode = "apk"; continue; }
+        if (arg == "-emit-win") { emitMode = "win"; continue; }
+        
+        // Library linking: -lname.disll or -l name.disll
+        if (arg.substr(0, 2) == "-l") {
+            string libName = arg.substr(2);
+            if (libName.empty() && i + 1 < argc) {
+                libName = argv[++i];
+            }
+            if (!libName.empty()) {
+                linkLibraries.push_back(libName);
+            }
+            continue;
+        }
 
         // Collect input files (support multiple .dis files)
         if (arg[0] != '-') {
@@ -734,60 +810,108 @@ int main(int argc, char** argv) {
     }
     addLog(string("Input: ") + inputFile);
 
-    // Resolve includes: search for include "name" patterns and attempt to locate .dish/.disll
+    // Resolve includes: search for include "name" patterns and attempt to locate .dish/.disll/.tuy
     namespace fs = std::filesystem;
     auto locateIncludeFile = [&](const string &incName) -> string {
         // Try exact path first
         if (fs::exists(incName)) return incName;
-        // Try with .dish
-        string tryDish = incName;
-        if (tryDish.find('.') == string::npos) tryDish += ".dish";
-        if (fs::exists(tryDish)) return tryDish;
-        // Search in input file dir
+        
+        // Get base name without extension for smart resolution
+        fs::path incPath(incName);
+        string baseName = incPath.stem().string();
+        string ext = incPath.extension().string();
+        
+        // Priority order for extensions: .dish > .tuy > .disll > .dis
+        vector<string> extPriority = {".dish", ".tuy", ".disll", ".dis"};
+        
+        // If no extension provided, try all in priority order
+        vector<string> tryExts;
+        if (ext.empty()) {
+            tryExts = extPriority;
+        } else {
+            tryExts = {ext};
+        }
+        
+        // Search directories in order
+        vector<fs::path> searchDirs;
+        
+        // 1. Input file directory
         fs::path inputDir = fs::path(inputFile).parent_path();
-        fs::path p1 = inputDir / tryDish;
-        if (fs::exists(p1)) return p1.string();
-        // Search current working directory
-        fs::path cwd = fs::current_path();
-        fs::path p2 = cwd / tryDish;
-        if (fs::exists(p2)) return p2.string();
-        // Search workspace root (one level up from compiler directory if present)
-        fs::path wsRoot = fs::path(".");
+        if (!inputDir.empty()) searchDirs.push_back(inputDir);
+        
+        // 2. Current working directory
+        searchDirs.push_back(fs::current_path());
+        
+        // 3. Standard include paths
+        searchDirs.push_back("release/include/displexity");
+        searchDirs.push_back("include/displexity");
+        searchDirs.push_back("lib_sources");
+        
+        // 4. Environment variable paths
+        const char* dispHome = getenv("DISPLEXITY_HOME");
+        if (dispHome) {
+            searchDirs.push_back(fs::path(dispHome) / "include" / "displexity");
+            searchDirs.push_back(fs::path(dispHome) / "lib");
+        }
+        
+        // 5. System paths
+        #ifdef _WIN32
+        searchDirs.push_back("C:/Program Files/Displexity/include/displexity");
+        searchDirs.push_back("C:/Program Files (x86)/Displexity/include/displexity");
+        #else
+        searchDirs.push_back("/usr/local/include/displexity");
+        searchDirs.push_back("/usr/include/displexity");
+        #endif
+        
+        // Search in each directory with extension priority
+        for (const auto& dir : searchDirs) {
+            if (!fs::exists(dir)) continue;
+            
+            for (const auto& tryExt : tryExts) {
+                fs::path tryPath = dir / (baseName + tryExt);
+                if (fs::exists(tryPath)) return tryPath.string();
+            }
+            
+            // Also try the original name as-is
+            fs::path exactPath = dir / incName;
+            if (fs::exists(exactPath)) return exactPath.string();
+        }
+        
+        // Recursive search with depth limit (for finding files anywhere)
         try {
-            for (auto &d : {inputDir, cwd, wsRoot}) {
-                if (!fs::exists(d)) continue;
-                // recursive search but limit matches
+            for (const auto& dir : {inputDir, fs::current_path()}) {
+                if (!fs::exists(dir)) continue;
                 int found = 0;
-                for (auto it = fs::recursive_directory_iterator(d); it != fs::recursive_directory_iterator(); ++it) {
+                vector<fs::path> matches;
+                
+                for (auto it = fs::recursive_directory_iterator(dir); 
+                     it != fs::recursive_directory_iterator(); ++it) {
                     try {
                         if (!fs::is_regular_file(*it)) continue;
-                        if (it->path().filename() == tryDish || it->path().filename() == incName) {
-                            return it->path().string();
-                        }
-                        // also check .disll variants
-                        if (it->path().extension() == ".disll" && it->path().stem() == fs::path(incName).stem()) {
-                            return it->path().string();
+                        string filename = it->path().filename().string();
+                        string stem = it->path().stem().string();
+                        
+                        // Check if this matches our search
+                        if (stem == baseName) {
+                            matches.push_back(it->path());
                         }
                     } catch (...) { continue; }
                     if (++found > 500) break;
                 }
+                
+                // If multiple matches, prefer by extension priority
+                if (!matches.empty()) {
+                    for (const auto& tryExt : extPriority) {
+                        for (const auto& m : matches) {
+                            if (m.extension() == tryExt) return m.string();
+                        }
+                    }
+                    // Return first match if no priority match
+                    return matches[0].string();
+                }
             }
         } catch (...) {}
-        // As a last resort, try scanning logical drives roots (limited)
-        for (char drive = 'A'; drive <= 'Z'; ++drive) {
-            string root = string(1, drive) + ":\\";
-            try {
-                if (!fs::exists(root)) continue;
-                int found = 0;
-                for (auto &p : fs::recursive_directory_iterator(root)) {
-                    try {
-                        if (!fs::is_regular_file(p)) continue;
-                        if (p.path().filename() == tryDish) return p.path().string();
-                    } catch (...) { }
-                    if (++found > 200) break;
-                }
-            } catch (...) { continue; }
-        }
+        
         return string();
     };
 
@@ -797,9 +921,22 @@ int main(int argc, char** argv) {
         std::istringstream ss(source);
         string line;
         while (std::getline(ss, line)) {
+            // Skip comment lines
+            string trimmed = line;
+            size_t firstNonSpace = trimmed.find_first_not_of(" \t");
+            if (firstNonSpace != string::npos) {
+                trimmed = trimmed.substr(firstNonSpace);
+            }
+            if (trimmed.substr(0, 2) == "//") continue;  // Skip single-line comments
+            
             // crude parse: look for include "..."
             auto pos = line.find("include");
             if (pos == string::npos) continue;
+            
+            // Make sure "include" is not inside a comment on this line
+            auto commentPos = line.find("//");
+            if (commentPos != string::npos && commentPos < pos) continue;
+            
             auto q1 = line.find('"', pos);
             if (q1 == string::npos) continue;
             auto q2 = line.find('"', q1 + 1);
@@ -818,8 +955,11 @@ int main(int argc, char** argv) {
         string resolved = pr.second;
         if (!resolved.empty()) {
             try {
+                fs::path resolvedPath(resolved);
+                string ext = resolvedPath.extension().string();
+                
                 // Check if it's a binary library (.disll)
-                if (fs::path(resolved).extension() == ".disll") {
+                if (ext == ".disll") {
                     // Load binary library
                     try {
                         auto [funcs, code] = DispLibrary::load(resolved);
@@ -832,6 +972,18 @@ int main(int argc, char** argv) {
                         }
                     } catch (const exception& e) {
                         addLog(string("Error loading library ") + resolved + ": " + e.what());
+                    }
+                } else if (ext == ".tuy") {
+                    // TUI header file - treat like .dish but mark as TUI
+                    ifstream incf(resolved);
+                    if (incf) {
+                        stringstream sb;
+                        sb << "// --- begin TUI include: " << resolved << " ---\n";
+                        sb << "// TUI_HEADER_ENABLED\n";
+                        sb << incf.rdbuf();
+                        sb << "\n// --- end TUI include: " << resolved << " ---\n";
+                        aggregatedIncludes += sb.str();
+                        addLog(string("Included TUI header: ") + resolved);
                     }
                 } else {
                     // Text include (.dis, .dish)
@@ -854,19 +1006,45 @@ int main(int argc, char** argv) {
     if (!aggregatedIncludes.empty()) {
         source = aggregatedIncludes + "\n" + source;
     }
+    
+    // Load libraries specified with -l flag
+    for (const auto& libPath : linkLibraries) {
+        string resolved = locateIncludeFile(libPath);
+        if (!resolved.empty() && fs::path(resolved).extension() == ".disll") {
+            try {
+                auto [funcs, code] = DispLibrary::load(resolved);
+                libraryCode += "// --- Library (-l): " + resolved + " ---\n";
+                libraryCode += code;
+                libraryCode += "\n";
+                addLog(string("Linked library: ") + resolved + " (" + to_string(funcs.size()) + " functions)");
+            } catch (const exception& e) {
+                addLog(string("Error linking library ") + resolved + ": " + e.what());
+            }
+        } else {
+            addLog(string("Library not found: ") + libPath);
+        }
+    }
 
-    // Default output file (default is .exe if not specified)
+    // Default output file (default is .disp if not specified)
     if (outputFile.empty()) {
         string base = removeExtension(basename(inputFile));
         if (emitMode == "c") outputFile = base + ".c";
         else if (emitMode == "asm") outputFile = base + ".asm";
-        else if (emitMode == "disp") outputFile = base + ".disp";
+        else if (emitMode == "exe") outputFile = base + ".exe";
+        else if (emitMode == "tui") outputFile = base + ".tui";
         else if (emitMode == "bare-asm") outputFile = base + ".s";
         else if (emitMode == "arm") outputFile = base + ".arm.s";
         else if (emitMode == "riscv") outputFile = base + ".riscv.s";
         else if (emitMode == "wasm") outputFile = base + ".wat";
         else if (emitMode == "lib") outputFile = base + ".disll";
-        else outputFile = base + ".exe";  // default: emit exe
+        else if (emitMode == "linux") outputFile = base + "_linux";
+        else if (emitMode == "linux-deb") outputFile = base + ".deb";
+        else if (emitMode == "linux-tar") outputFile = base + ".tar.gz";
+        else if (emitMode == "macos") outputFile = base + "_macos";
+        else if (emitMode == "ios") outputFile = base + ".ipa";
+        else if (emitMode == "apk") outputFile = base + ".apk";
+        else if (emitMode == "win") outputFile = base + ".exe";
+        else outputFile = base + ".disp";  // default: emit .disp package
     }
 
     // Add output and mode to log
@@ -1099,6 +1277,40 @@ int main(int argc, char** argv) {
             logfile.close();
         }
         return 0;
+    } else if (emitMode == "tui") {
+        // Generate TUI bytecode executable
+        TuiGenerator tuigen;
+        auto bytecode = tuigen.generate(program);
+        
+        // Write TUI binary output
+        ofstream outfile(outputFile, ios::binary);
+        if (!outfile) {
+            cerr << "Error: Cannot write TUI file: " << outputFile << "\n";
+            addLog(string("Error: Cannot write TUI file: ") + outputFile);
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile << "Status: Error\n";
+                logfile << "Error: Cannot write TUI file.\n";
+                logfile.close();
+            }
+            return 1;
+        }
+        outfile.write((char*)bytecode.data(), bytecode.size());
+        outfile.close();
+        addLog(string("TUI bytecode emitted: ") + outputFile);
+        cout << "TUI bytecode emitted: " << outputFile << "\n";
+        cout << "Run with: disp run " << outputFile << "\n";
+        // finalize log and exit
+        addLog(string("Status: Success"));
+        ofstream logfile(logFile);
+        if (logfile) {
+            logfile << "=== Displexity Compilation Log ===\n";
+            for (auto &l : logLines) logfile << l << "\n";
+            logfile.close();
+        }
+        return 0;
     } else if (emitMode == "lib") {
         // Generate library - compile functions only, no main
         CodeGenerator codegen;
@@ -1126,7 +1338,8 @@ int main(int argc, char** argv) {
             DispLibrary::create(inputFile, outputFile, libCode);
             addLog(string("Library created: ") + outputFile);
             cout << "Library created: " << outputFile << "\n";
-            cout << "Use with: include \"" << outputFile << "\"\n";
+            cout << "Header: include \"" << removeExtension(basename(outputFile)) << ".dish\"\n";
+            cout << "Link with: disp myfile.dis -l" << outputFile << "\n";
         } catch (const exception& e) {
             cerr << "Error creating library: " << e.what() << "\n";
             addLog(string("Error: ") + e.what());
@@ -1142,9 +1355,94 @@ int main(int argc, char** argv) {
             logfile.close();
         }
         return 0;
-    } else {
+    }
+    
+    // Cross-platform compilation modes
+    if (emitMode == "linux" || emitMode == "linux-deb" || emitMode == "linux-tar" ||
+        emitMode == "macos" || emitMode == "ios" || emitMode == "apk") {
+        
+        // Generate C code first
         CodeGenerator codegen;
         generatedCode = codegen.generate(program);
+        
+        // Write temp C file
+        string tempCFile = removeExtension(baseName) + "_temp.c";
+        ofstream tempfile(tempCFile);
+        if (!tempfile) {
+            cerr << "Error: Cannot write temp file: " << tempCFile << "\n";
+            return 1;
+        }
+        tempfile << generatedCode;
+        tempfile.close();
+        
+        // Determine script path
+        string scriptDir = "scripts/";
+        string scriptCmd;
+        
+        #ifdef _WIN32
+        string shell = "bash ";  // Use Git Bash or WSL
+        #else
+        string shell = "";
+        #endif
+        
+        if (emitMode == "linux") {
+            scriptCmd = shell + scriptDir + "build_linux.sh " + inputFile + " " + outputFile;
+        } else if (emitMode == "linux-deb") {
+            string pkgName = removeExtension(baseName);
+            scriptCmd = shell + scriptDir + "build_deb.sh " + inputFile + " " + pkgName + " 1.0.0";
+        } else if (emitMode == "linux-tar") {
+            string pkgName = removeExtension(baseName);
+            scriptCmd = shell + scriptDir + "build_tar.sh " + inputFile + " " + pkgName + " 1.0.0";
+        } else if (emitMode == "macos") {
+            scriptCmd = shell + scriptDir + "build_macos.sh " + inputFile + " " + outputFile;
+        } else if (emitMode == "ios") {
+            string appName = removeExtension(baseName);
+            scriptCmd = shell + scriptDir + "build_ios.sh " + inputFile + " " + appName;
+        } else if (emitMode == "apk") {
+            string pkgName = "com.displexity." + removeExtension(baseName);
+            string appName = removeExtension(baseName);
+            scriptCmd = shell + scriptDir + "build_apk.sh " + inputFile + " " + pkgName + " " + appName;
+        }
+        
+        addLog(string("Cross-compile command: ") + scriptCmd);
+        cout << "Running: " << scriptCmd << "\n";
+        
+        int result = system(scriptCmd.c_str());
+        
+        // Cleanup temp file
+        try { fs::remove(tempCFile); } catch (...) {}
+        
+        if (result != 0) {
+            cerr << "Error: Cross-compilation failed with code " << result << "\n";
+            addLog(string("Cross-compile failed: ") + to_string(result));
+            return 1;
+        }
+        
+        addLog(string("Cross-compile succeeded: ") + outputFile);
+        addLog(string("Status: Success"));
+        if (!noLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
+        }
+        return 0;
+    }
+    
+    // Store user icon path for later use
+    string userDefinedIcon;
+    
+    {
+        CodeGenerator codegen;
+        generatedCode = codegen.generate(program);
+        
+        // Get icon path from for_this_use_icon() if set
+        userDefinedIcon = codegen.getAppIconPath();
+        if (!userDefinedIcon.empty()) {
+            addLog(string("User icon set: ") + userDefinedIcon);
+        }
     }
 
     // Inject library code into generated C (after includes, before main code)
@@ -1232,20 +1530,44 @@ int main(int argc, char** argv) {
         resourceFile = removeExtension(outputFile) + "_res.rc";
         ofstream rcFile(resourceFile);
         if (rcFile) {
-            // Look for icon in multiple locations
+            // Look for icon - priority: user-defined > default locations
             string iconPath;
-            vector<string> iconSearchPaths = {
-                "exe.ico",                                    // Current directory
-                "release/resources/exe.ico",                  // Dev release folder
-                getenv("DISPLEXITY_HOME") ? string(getenv("DISPLEXITY_HOME")) + "/resources/exe.ico" : "",
-                "C:/Program Files/Displexity/resources/exe.ico",
-                "C:/Program Files (x86)/Displexity/resources/exe.ico"
-            };
             
-            for (const auto& path : iconSearchPaths) {
-                if (!path.empty() && fs::exists(path)) {
-                    iconPath = path;
-                    break;
+            // First check if user specified icon via for_this_use_icon()
+            if (!userDefinedIcon.empty()) {
+                // Try the user path directly
+                if (fs::exists(userDefinedIcon)) {
+                    iconPath = userDefinedIcon;
+                } else {
+                    // Try relative to input file
+                    fs::path inputDir = fs::path(inputFile).parent_path();
+                    fs::path tryPath = inputDir / userDefinedIcon;
+                    if (fs::exists(tryPath)) {
+                        iconPath = tryPath.string();
+                    }
+                }
+                
+                // Convert non-ico formats to ico if needed
+                if (!iconPath.empty() && fs::path(iconPath).extension() != ".ico") {
+                    addLog("Note: Icon format conversion not yet implemented, using as-is");
+                }
+            }
+            
+            // Fall back to default icon locations
+            if (iconPath.empty()) {
+                vector<string> iconSearchPaths = {
+                    "exe.ico",                                    // Current directory
+                    "release/resources/exe.ico",                  // Dev release folder
+                    getenv("DISPLEXITY_HOME") ? string(getenv("DISPLEXITY_HOME")) + "/resources/exe.ico" : "",
+                    "C:/Program Files/Displexity/resources/exe.ico",
+                    "C:/Program Files (x86)/Displexity/resources/exe.ico"
+                };
+                
+                for (const auto& path : iconSearchPaths) {
+                    if (!path.empty() && fs::exists(path)) {
+                        iconPath = path;
+                        break;
+                    }
                 }
             }
             
@@ -1348,13 +1670,14 @@ int main(int argc, char** argv) {
 
     // Finalize log with success
     addLog(string("Status: Success"));
-    ofstream logfile(logFile);
-    if (logfile) {
-        logfile << "=== Displexity Compilation Log ===\n";
-        for (auto &l : logLines) logfile << l << "\n";
-        logfile.close();
+    if (!noLog) {
+        ofstream logfile(logFile);
+        if (logfile) {
+            logfile << "=== Displexity Compilation Log ===\n";
+            for (auto &l : logLines) logfile << l << "\n";
+            logfile.close();
+        }
+        cout << "Log: " << logFile << "\n";
     }
-
-    cout << "Log: " << logFile << "\n";
     return 0;
 }

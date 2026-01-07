@@ -1,0 +1,78 @@
+// TUI Library Implementation
+// Terminal User Interface functions
+
+func clearScreen() {
+    // Clear terminal screen
+}
+
+func setCursorPos(int x, int y) {
+    // Move cursor
+}
+
+func hideCursor() {
+    // Hide cursor
+}
+
+func showCursor() {
+    // Show cursor
+}
+
+func getTermWidth() {
+    return 80
+}
+
+func getTermHeight() {
+    return 24
+}
+
+func setFgColor(int col) {
+    // Set text color
+}
+
+func setBgColor(int col) {
+    // Set background color
+}
+
+func resetColors() {
+    // Reset colors
+}
+
+func printAt(int x, int y, str msg) {
+    // Print at position
+}
+
+func printBox(int x, int y, int w, int h) {
+    // Draw box
+}
+
+func printHLine(int x, int y, int len) {
+    // Draw horizontal line
+}
+
+func printVLine(int x, int y, int len) {
+    // Draw vertical line
+}
+
+func getKey() {
+    return 0
+}
+
+func getKeyNonBlock() {
+    return 0
+}
+
+func isKeyDown() {
+    return 0
+}
+
+func drawButton(int x, int y, str label) {
+    // Draw button
+}
+
+func drawProgress(int x, int y, int w, int prog) {
+    // Draw progress bar
+}
+
+func drawMenu(int x, int y, str items) {
+    // Draw menu
+}

@@ -1,0 +1,40 @@
+// Displexity Window Library Header
+// Window management and event handling
+
+// Window creation and management
+def create_window(str title, int width, int height)
+def destroy_window()
+def set_window_title(str title)
+def set_window_size(int width, int height)
+def set_window_position(int x, int y)
+def get_window_width() -> int
+def get_window_height() -> int
+def window_should_close() -> bool
+def poll_events()
+
+// Window state
+def is_window_focused() -> bool
+def is_window_minimized() -> bool
+def is_window_maximized() -> bool
+def minimize_window()
+def maximize_window()
+def restore_window()
+def set_window_fullscreen(bool fullscreen)
+
+// Rendering
+def clear()
+def clear_color(float r, float g, float b, float a)
+def render()
+def swap_buffers()
+def set_vsync(bool enabled)
+
+// Timing
+def get_time() -> float
+def get_delta_time() -> float
+def set_target_fps(int fps)
+
+// Constants
+int WINDOW_RESIZABLE = 1
+int WINDOW_FULLSCREEN = 2
+int WINDOW_BORDERLESS = 4
+int WINDOW_ALWAYS_ON_TOP = 8

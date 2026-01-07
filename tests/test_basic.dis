@@ -1,0 +1,56 @@
+// Test: Basic Language Features
+// Tests: variables, print, arithmetic, strings
+
+// Variable declarations
+int x = 10
+int y = 20
+float pi = 3.14159
+str name = "Displexity"
+bool flag = true
+
+// Print tests
+print "=== Basic Tests ==="
+print "Integer x: "
+print x
+print "\n"
+
+print "Integer y: "
+print y
+print "\n"
+
+print "Float pi: "
+print pi
+print "\n"
+
+print "String name: "
+print name
+print "\n"
+
+print "Boolean flag: "
+print flag
+print "\n"
+
+// Arithmetic tests
+int sum = x + y
+int diff = y - x
+int prod = x * y
+int quot = y / x
+
+print "\n=== Arithmetic Tests ==="
+print "x + y = "
+print sum
+print "\n"
+
+print "y - x = "
+print diff
+print "\n"
+
+print "x * y = "
+print prod
+print "\n"
+
+print "y / x = "
+print quot
+print "\n"
+
+print "\n=== All Basic Tests Passed ==="

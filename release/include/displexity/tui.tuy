@@ -1,0 +1,44 @@
+// Displexity TUI Header (.tuy)
+// Terminal User Interface definitions
+
+// Screen
+def clearScreen()
+def setCursor(int x, int y)
+def hideCursor()
+def showCursor()
+def getWidth() -> int
+def getHeight() -> int
+
+// Colors (0-15 ANSI)
+def setFg(int color)
+def setBg(int color)
+def reset()
+
+// Drawing
+def printAt(int x, int y, str text)
+def box(int x, int y, int w, int h)
+def hline(int x, int y, int len)
+def vline(int x, int y, int len)
+def fill(int x, int y, int w, int h, str ch)
+
+// Input
+def getKey() -> int
+def keyPressed() -> bool
+def readLine() -> str
+
+// UI Components
+def button(int x, int y, str label) -> bool
+def progress(int x, int y, int w, int val, int max)
+def menu(int x, int y, str items) -> int
+def input(int x, int y, int w) -> str
+def checkbox(int x, int y, str label, bool checked) -> bool
+
+// Colors
+int BLACK = 0
+int RED = 1
+int GREEN = 2
+int YELLOW = 3
+int BLUE = 4
+int MAGENTA = 5
+int CYAN = 6
+int WHITE = 7

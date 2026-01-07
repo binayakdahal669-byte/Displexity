@@ -1,0 +1,77 @@
+// Test: Functions
+// Tests: function declaration, parameters, return values
+
+print "=== Function Tests ===\n"
+
+// Simple function
+func greet() {
+    print "Hello from greet()!\n"
+}
+
+// Function with parameters
+func add(int a, int b) {
+    int result = a + b
+    return result
+}
+
+// Function with string parameter
+func sayHello(str name) {
+    print "Hello, "
+    print name
+    print "!\n"
+}
+
+// Recursive function (factorial)
+func factorial(int n) {
+    if n <= 1 {
+        return 1
+    }
+    int prev = factorial(n - 1)
+    return n * prev
+}
+
+// Function that returns boolean
+func isPositive(int num) {
+    if num > 0 {
+        return true
+    }
+    return false
+}
+
+// Call functions
+greet()
+
+int sum = add(15, 25)
+print "add(15, 25) = "
+print sum
+print "\n"
+
+sayHello("World")
+sayHello("Displexity")
+
+// Factorial tests
+print "\nFactorial tests:\n"
+for i in 1..8 {
+    int fact = factorial(i)
+    print "factorial("
+    print i
+    print ") = "
+    print fact
+    print "\n"
+}
+
+// Boolean function test
+print "\nisPositive tests:\n"
+int testNum = 5
+if isPositive(testNum) {
+    print "5 is positive: true\n"
+}
+
+testNum = -3
+if isPositive(testNum) {
+    print "-3 is positive: true\n"
+} else {
+    print "-3 is positive: false\n"
+}
+
+print "\n=== All Function Tests Passed ==="

@@ -1,0 +1,40 @@
+// Test: Emit Mode Verification
+// Tests: Various compilation output modes
+
+print "=== Emit Mode Test Program ===\n"
+
+// Simple program that works across all emit modes
+int x = 42
+str message = "Hello from Displexity!"
+
+print message
+print "\n"
+
+print "Value: "
+print x
+print "\n"
+
+// Function test
+func add(int a, int b) {
+    return a + b
+}
+
+int result = add(10, 20)
+print "10 + 20 = "
+print result
+print "\n"
+
+// Loop test
+print "Counting: "
+for i in 1..6 {
+    print i
+    print " "
+}
+print "\n"
+
+// Conditional test
+if x > 40 {
+    print "x is greater than 40\n"
+}
+
+print "\n=== Emit Mode Test Complete ===\n"

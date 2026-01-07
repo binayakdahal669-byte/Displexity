@@ -19,14 +19,23 @@ private:
     bool needsHttp = false;
     bool needsKeypress = false;
     bool needsAI = false;
+    bool needsImage = false;
+    bool needsSound = false;
+    bool needsTUI = false;
+    std::string appIconPath;  // Icon path set by for_this_use_icon()
 
     std::string genTmp() {
         return "__tmp_" + std::to_string(tmpCounter++);
     }
 
 public:
+    // Get the icon path set by for_this_use_icon()
+    std::string getAppIconPath() const { return appIconPath; }
+
+public:
     std::string generate(const Program& prog) {
         code.str("");
+        appIconPath = "";  // Reset icon path
         
         // Scan for required features
         scanFeatures(prog);
@@ -139,6 +148,9 @@ private:
         else if (std::dynamic_pointer_cast<HotkeyStmt>(stmt)) { needsKeypress = true; }
         else if (std::dynamic_pointer_cast<AIStmt>(stmt)) { needsAI = true; needsHttp = true; }
         else if (std::dynamic_pointer_cast<InputStmt>(stmt)) { /* input always available */ }
+        else if (auto iconStmt = std::dynamic_pointer_cast<IconStmt>(stmt)) {
+            appIconPath = iconStmt->iconPath;
+        }
         else if (auto func = std::dynamic_pointer_cast<FunctionDecl>(stmt)) {
             for (const auto& s : func->body) scanStatement(s);
         }
@@ -180,10 +192,26 @@ private:
                 funcCall->name == "show_cursor") {
                 needsKeypress = true;
             }
+            // Check for image/sound functions
+            if (funcCall->name == "load_image" || funcCall->name == "draw_image") {
+                needsImage = true;
+                needsGraphics = true;
+            }
+            if (funcCall->name == "load_sound" || funcCall->name == "play_sound" || 
+                funcCall->name == "stop_sound" || funcCall->name == "pause_sound") {
+                needsSound = true;
+            }
             // Scan function arguments
             for (const auto& arg : funcCall->args) {
                 scanExpression(arg);
             }
+        }
+        else if (auto loadImg = std::dynamic_pointer_cast<LoadImageExpr>(expr)) {
+            needsImage = true;
+            needsGraphics = true;
+        }
+        else if (auto sndExpr = std::dynamic_pointer_cast<SoundExpr>(expr)) {
+            needsSound = true;
         }
         else if (auto binOp = std::dynamic_pointer_cast<BinaryOp>(expr)) {
             scanExpression(binOp->left);
@@ -716,6 +744,104 @@ private:
             code << "    snprintf(response, sizeof(response), \"AI Response to: %s\", prompt);\n";
             code << "    return response;\n";
             code << "}\n\n";
+        }
+        
+        // Image loading helper (like ctx.drawImage with 9 args)
+        if (needsImage) {
+            code << "// Image loading runtime\n";
+            code << "#ifdef _WIN32\n";
+            code << "#include <wingdi.h>\n";
+            code << "typedef struct { int width, height; unsigned char* data; HBITMAP hBitmap; } __disp_image;\n";
+            code << "__disp_image __disp_images[256];\n";
+            code << "int __disp_image_count = 0;\n\n";
+            
+            code << "int __disp_load_image(const char* path) {\n";
+            code << "    if (__disp_image_count >= 256) return -1;\n";
+            code << "    int id = __disp_image_count++;\n";
+            code << "    // Load BMP image (simplified)\n";
+            code << "    __disp_images[id].hBitmap = (HBITMAP)LoadImageA(NULL, path, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);\n";
+            code << "    if (__disp_images[id].hBitmap) {\n";
+            code << "        BITMAP bm;\n";
+            code << "        GetObject(__disp_images[id].hBitmap, sizeof(bm), &bm);\n";
+            code << "        __disp_images[id].width = bm.bmWidth;\n";
+            code << "        __disp_images[id].height = bm.bmHeight;\n";
+            code << "    }\n";
+            code << "    return id;\n";
+            code << "}\n\n";
+            
+            // draw_image with 9 args like ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+            code << "void __disp_draw_image_9(int id, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {\n";
+            code << "    if (id < 0 || id >= __disp_image_count) return;\n";
+            code << "    if (!__disp_hdc || !__disp_images[id].hBitmap) return;\n";
+            code << "    HDC memDC = CreateCompatibleDC(__disp_hdc);\n";
+            code << "    SelectObject(memDC, __disp_images[id].hBitmap);\n";
+            code << "    StretchBlt(__disp_hdc, dx, dy, dw, dh, memDC, sx, sy, sw, sh, SRCCOPY);\n";
+            code << "    DeleteDC(memDC);\n";
+            code << "}\n\n";
+            
+            // Simplified draw_image with fewer args
+            code << "void __disp_draw_image(int id, int x, int y) {\n";
+            code << "    if (id < 0 || id >= __disp_image_count) return;\n";
+            code << "    __disp_draw_image_9(id, 0, 0, __disp_images[id].width, __disp_images[id].height, x, y, __disp_images[id].width, __disp_images[id].height);\n";
+            code << "}\n\n";
+            
+            code << "void __disp_draw_image_scaled(int id, int x, int y, int w, int h) {\n";
+            code << "    if (id < 0 || id >= __disp_image_count) return;\n";
+            code << "    __disp_draw_image_9(id, 0, 0, __disp_images[id].width, __disp_images[id].height, x, y, w, h);\n";
+            code << "}\n\n";
+            
+            code << "#else\n";
+            code << "// Linux image stubs\n";
+            code << "int __disp_load_image(const char* path) { return -1; }\n";
+            code << "void __disp_draw_image_9(int id, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {}\n";
+            code << "void __disp_draw_image(int id, int x, int y) {}\n";
+            code << "void __disp_draw_image_scaled(int id, int x, int y, int w, int h) {}\n";
+            code << "#endif\n\n";
+        }
+        
+        // Sound loading helper
+        if (needsSound) {
+            code << "// Sound/Audio runtime\n";
+            code << "#ifdef _WIN32\n";
+            code << "#include <mmsystem.h>\n";
+            code << "#pragma comment(lib, \"winmm.lib\")\n";
+            code << "typedef struct { char path[256]; int playing; } __disp_sound;\n";
+            code << "__disp_sound __disp_sounds[64];\n";
+            code << "int __disp_sound_count = 0;\n\n";
+            
+            code << "int __disp_load_sound(const char* path) {\n";
+            code << "    if (__disp_sound_count >= 64) return -1;\n";
+            code << "    int id = __disp_sound_count++;\n";
+            code << "    strncpy(__disp_sounds[id].path, path, 255);\n";
+            code << "    __disp_sounds[id].playing = 0;\n";
+            code << "    return id;\n";
+            code << "}\n\n";
+            
+            code << "void __disp_play_sound(int id, int loop) {\n";
+            code << "    if (id < 0 || id >= __disp_sound_count) return;\n";
+            code << "    DWORD flags = SND_FILENAME | SND_ASYNC;\n";
+            code << "    if (loop) flags |= SND_LOOP;\n";
+            code << "    PlaySoundA(__disp_sounds[id].path, NULL, flags);\n";
+            code << "    __disp_sounds[id].playing = 1;\n";
+            code << "}\n\n";
+            
+            code << "void __disp_stop_sound(int id) {\n";
+            code << "    if (id < 0 || id >= __disp_sound_count) return;\n";
+            code << "    PlaySoundA(NULL, NULL, 0);\n";
+            code << "    __disp_sounds[id].playing = 0;\n";
+            code << "}\n\n";
+            
+            code << "void __disp_pause_sound(int id) {\n";
+            code << "    __disp_stop_sound(id);\n";
+            code << "}\n\n";
+            
+            code << "#else\n";
+            code << "// Linux sound stubs\n";
+            code << "int __disp_load_sound(const char* path) { return -1; }\n";
+            code << "void __disp_play_sound(int id, int loop) {}\n";
+            code << "void __disp_stop_sound(int id) {}\n";
+            code << "void __disp_pause_sound(int id) {}\n";
+            code << "#endif\n\n";
         }
     }
 
@@ -1253,7 +1379,55 @@ private:
                     if (i < gfxStmt->args.size() - 1) code << ", ";
                 }
                 code << ");\n";
+            } else if (gfxStmt->command == "draw_image") {
+                // draw_image supports 3, 5, or 9 args like ctx.drawImage
+                if (gfxStmt->args.size() == 3) {
+                    // draw_image(id, x, y)
+                    code << "    __disp_draw_image(";
+                } else if (gfxStmt->args.size() == 5) {
+                    // draw_image(id, x, y, w, h)
+                    code << "    __disp_draw_image_scaled(";
+                } else if (gfxStmt->args.size() >= 9) {
+                    // draw_image(id, sx, sy, sw, sh, dx, dy, dw, dh)
+                    code << "    __disp_draw_image_9(";
+                } else {
+                    code << "    __disp_draw_image(";
+                }
+                for (size_t i = 0; i < gfxStmt->args.size(); i++) {
+                    emitExpression(gfxStmt->args[i]);
+                    if (i < gfxStmt->args.size() - 1) code << ", ";
+                }
+                code << ");\n";
+            } else if (gfxStmt->command == "play_sound") {
+                code << "    __disp_play_sound(";
+                emitExpression(gfxStmt->args[0]);
+                if (gfxStmt->args.size() > 1) {
+                    code << ", ";
+                    emitExpression(gfxStmt->args[1]);
+                } else {
+                    code << ", 0";  // no loop by default
+                }
+                code << ");\n";
+            } else if (gfxStmt->command == "stop_sound") {
+                code << "    __disp_stop_sound(";
+                for (size_t i = 0; i < gfxStmt->args.size(); i++) {
+                    emitExpression(gfxStmt->args[i]);
+                    if (i < gfxStmt->args.size() - 1) code << ", ";
+                }
+                code << ");\n";
             }
+        } else if (auto iconStmt = std::dynamic_pointer_cast<IconStmt>(stmt)) {
+            // Icon is handled at compile time, not runtime
+            // Just emit a comment
+            code << "    // App icon: " << iconStmt->iconPath << "\n";
+        } else if (auto fromInc = std::dynamic_pointer_cast<FromIncludeStmt>(stmt)) {
+            // From-include is handled at preprocessing, emit comment
+            code << "    // from \"" << fromInc->path << "\" include ";
+            for (size_t i = 0; i < fromInc->symbols.size(); i++) {
+                code << fromInc->symbols[i];
+                if (i < fromInc->symbols.size() - 1) code << ", ";
+            }
+            code << "\n";
         }
     }
 
@@ -1319,6 +1493,26 @@ private:
                 if (i < arrLit->elements.size() - 1) code << ", ";
             }
             code << "}";
+        } else if (auto loadImg = std::dynamic_pointer_cast<LoadImageExpr>(expr)) {
+            code << "__disp_load_image(\"" << escapeString(loadImg->path) << "\")";
+        } else if (auto sndExpr = std::dynamic_pointer_cast<SoundExpr>(expr)) {
+            if (sndExpr->command == "load") {
+                code << "__disp_load_sound(\"" << escapeString(sndExpr->path) << "\")";
+            } else if (sndExpr->command == "play") {
+                code << "__disp_play_sound(";
+                for (size_t i = 0; i < sndExpr->args.size(); i++) {
+                    emitExpression(sndExpr->args[i]);
+                    if (i < sndExpr->args.size() - 1) code << ", ";
+                }
+                code << ")";
+            } else if (sndExpr->command == "stop") {
+                code << "__disp_stop_sound(";
+                for (size_t i = 0; i < sndExpr->args.size(); i++) {
+                    emitExpression(sndExpr->args[i]);
+                    if (i < sndExpr->args.size() - 1) code << ", ";
+                }
+                code << ")";
+            }
         }
     }
 

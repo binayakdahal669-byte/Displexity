@@ -277,6 +277,39 @@ public:
     ClassDecl(const std::string& n) : name(n) {}
 };
 
+// Icon setting statement: for_this_use_icon("path.ico")
+class IconStmt : public Stmt {
+public:
+    std::string iconPath;
+    IconStmt(const std::string& p) : iconPath(p) {}
+};
+
+// Image loading expression: load_image("path", x, y, w, h, sx, sy, sw, sh)
+class LoadImageExpr : public Expr {
+public:
+    std::string path;
+    std::vector<ExprPtr> args;  // x, y, w, h, sx, sy, sw, sh (like ctx.drawImage 9-arg)
+    LoadImageExpr(const std::string& p, const std::vector<ExprPtr>& a) : path(p), args(a) {}
+};
+
+// Sound loading expression: load_sound("path"), play_sound(id), stop_sound(id)
+class SoundExpr : public Expr {
+public:
+    std::string command;  // "load", "play", "stop", "pause", "volume"
+    std::string path;
+    std::vector<ExprPtr> args;
+    SoundExpr(const std::string& cmd, const std::string& p = "", const std::vector<ExprPtr>& a = {}) 
+        : command(cmd), path(p), args(a) {}
+};
+
+// From-include statement: from <path> include funcname
+class FromIncludeStmt : public Stmt {
+public:
+    std::string path;
+    std::vector<std::string> symbols;  // functions/symbols to import
+    FromIncludeStmt(const std::string& p, const std::vector<std::string>& s) : path(p), symbols(s) {}
+};
+
 // Program (root)
 class Program {
 public:
