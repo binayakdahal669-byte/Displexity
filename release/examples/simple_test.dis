@@ -1,4 +1,28 @@
-// Simple test
-print("Hello World\n");
-int x = 42;
-print("x = " << x << "\n");
+// Simple Test - Displexity Example
+// Tests basic language features
+
+print("=== Displexity Simple Test ===")
+
+// Variables
+int x = 10
+int y = 20
+int sum = x + y
+
+print("x = 10, y = 20")
+print("sum = ")
+print(sum)
+
+// Conditionals
+if sum > 25 {
+    print("Sum is greater than 25")
+} else {
+    print("Sum is 25 or less")
+}
+
+// Loop
+print("Counting to 5:")
+for i in 1..6 {
+    print(i)
+}
+
+print("=== Test Complete ===")

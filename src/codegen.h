@@ -1440,6 +1440,8 @@ private:
             code << "\"" << escapeString(strLit->value) << "\"";
         } else if (auto boolLit = std::dynamic_pointer_cast<BoolLiteral>(expr)) {
             code << (boolLit->value ? "1" : "0");
+        } else if (auto infLit = std::dynamic_pointer_cast<InfinityLiteral>(expr)) {
+            code << "2147483647";  // Max 32-bit signed integer to represent infinity
         } else if (auto var = std::dynamic_pointer_cast<Variable>(expr)) {
             code << var->name;
         } else if (auto arrAccess = std::dynamic_pointer_cast<ArrayAccess>(expr)) {

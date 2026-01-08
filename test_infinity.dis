@@ -1,0 +1,35 @@
+// Test INFINITY feature
+print("Testing INFINITY keyword...")
+
+// Test different ways to use INFINITY
+for (frame = 0 to INFINITY) {
+    print("Frame: " << frame)
+    
+    // Break after a few iterations for testing
+    if (frame > 5) {
+        break
+    }
+}
+
+print("INFINITY can be used in comparisons:")
+x = 100
+if (x < INFINITY) {
+    print("100 is less than INFINITY")
+}
+
+print("INFINITY aliases work too:")
+for (frame = 0 to infinity) {
+    print("Using lowercase infinity: " << frame)
+    if (frame > 3) {
+        break
+    }
+}
+
+for (frame = 0 to inf) {
+    print("Using inf: " << frame)
+    if (frame > 2) {
+        break
+    }
+}
+
+print("INFINITY test complete!")

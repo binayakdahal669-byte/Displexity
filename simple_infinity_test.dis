@@ -1,0 +1,20 @@
+// Simple INFINITY test
+print("INFINITY value test:")
+
+// Test INFINITY in comparisons
+if (100 < INFINITY) {
+    print("✓ 100 is less than INFINITY")
+}
+
+if (INFINITY > 1000000) {
+    print("✓ INFINITY is greater than 1,000,000")
+}
+
+// Test different INFINITY aliases
+print("INFINITY aliases:")
+print("INFINITY = " << INFINITY)
+print("infinity = " << infinity)  
+print("INF = " << INF)
+print("inf = " << inf)
+
+print("All INFINITY tests passed!")

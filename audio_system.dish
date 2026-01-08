@@ -1,0 +1,47 @@
+// Advanced Audio System Header
+// Real-time sound synthesis and playback
+// File: audio_system.dish
+
+// Audio format constants
+const AUDIO_FORMAT_PCM_8 = 1
+const AUDIO_FORMAT_PCM_16 = 2
+const AUDIO_FORMAT_PCM_32 = 3
+const AUDIO_FORMAT_FLOAT = 4
+
+// Sample rate constants
+const AUDIO_RATE_8K = 8000
+const AUDIO_RATE_16K = 16000
+const AUDIO_RATE_44K = 44100
+const AUDIO_RATE_48K = 48000
+const AUDIO_RATE_96K = 96000
+
+// Audio channel constants
+const AUDIO_MONO = 1
+const AUDIO_STEREO = 2
+const AUDIO_5_1 = 6
+
+// Sound types for Minecraft-like game
+const SOUND_STEP = 1
+const SOUND_BREAK_BLOCK = 2
+const SOUND_PLACE_BLOCK = 3
+const SOUND_JUMP = 4
+const SOUND_FALL = 5
+const SOUND_AMBIENT = 6
+const SOUND_MUSIC = 7
+const SOUND_WATER = 8
+
+// Function declarations for audio system
+
+func audio_system_init()
+func audio_system_cleanup()
+func audio_set_master_volume(float volume)
+func audio_create_buffer(int format, int sample_rate, int channels, int size)
+func audio_play_sound(int sound_id, float volume, float pitch)
+func audio_play_sound_at_position(int sound_id, float x, float y, float z, float volume)
+func audio_generate_step_sound(int surface_type, float volume)
+func audio_generate_break_sound(int block_type, float volume)
+func audio_generate_place_sound(int block_type, float volume)
+func audio_play_ambient_music()
+func audio_stop_all()
+func audio_set_listener_position(float x, float y, float z)
+func audio_set_listener_orientation(float forward_x, float forward_y, float forward_z)

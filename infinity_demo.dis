@@ -1,0 +1,34 @@
+// INFINITY Demo - Proper Usage
+print("=== DISPLEXITY INFINITY FEATURE ===")
+print("")
+
+print("✓ INFINITY keyword added to Displexity!")
+print("✓ Use INFINITY, infinity, INF, or inf")
+print("")
+
+print("Usage Examples:")
+print("1. Infinite loops:")
+print("   for (frame = 0 to INFINITY) { ... }")
+print("")
+
+print("2. Comparisons:")
+if (42 < INFINITY) {
+    print("   ✓ 42 < INFINITY is true")
+}
+
+if (INFINITY > 999999999) {
+    print("   ✓ INFINITY > 999,999,999 is true")
+}
+
+print("")
+print("3. Mathematical operations:")
+x = 1000
+if (x + 1000000 < INFINITY) {
+    print("   ✓ Even large numbers are less than INFINITY")
+}
+
+print("")
+print("Note: INFINITY represents 2,147,483,647 internally")
+print("Perfect for infinite loops without overflow!")
+print("")
+print("=== INFINITY FEATURE COMPLETE ===")

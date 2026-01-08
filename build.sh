@@ -16,12 +16,42 @@ fi
 
 # Build compiler
 echo "Building compiler..."
+#!/usr/bin/env bash
+
+# Optional: pass DISLLS as first argument or set DISLLS env var (comma-separated patterns)
+if [ -n "$1" ] && [ -z "$DISLLS" ]; then
+    DISLLS="$1"
+fi
+
+# If DISLLS provided, run helper to copy matching .disll files into bin/disll
+if [ -n "$DISLLS" ]; then
+    echo "Linking dislls: $DISLLS"
+    python3 scripts/link_dislls.py "$DISLLS" || python scripts/link_dislls.py "$DISLLS"
+fi
+
+# Generate icons (logs, nvim) before building resources
+echo "Generating icons..."
+python3 scripts/generate_icons.py release/resources || python scripts/generate_icons.py release/resources || true
+
+# Compile Windows resource (if windres is available)
+if command -v windres >/dev/null 2>&1; then
+    echo "Compiling resources with windres"
+    windres src/disp.rc -O coff -o src/disp_res.o || true
+    RES_OBJ=src/disp_res.o
+else
+    RES_OBJ=
+fi
+
+# Build the compiler (link resource object if present)
+echo "Building compiler..."
 g++ -std=c++17 -Wall -Wextra -O2 -Isrc $PLATFORM_FLAG \
     src/main.cpp \
+    src/displexity_disll_loader.cpp \
     src/compiler/lexer.cpp \
     src/compiler/parser.cpp \
     src/compiler/codegen.cpp \
     src/utils/logger.cpp \
+    $RES_OBJ \
     -o bin/dispcompiler
 
 if [ $? -ne 0 ]; then

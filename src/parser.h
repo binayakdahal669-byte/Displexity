@@ -1042,6 +1042,9 @@ private:
         if (match(TokenType::FALSE)) {
             return std::make_shared<BoolLiteral>(false);
         }
+        if (match(TokenType::INFINITY)) {
+            return std::make_shared<InfinityLiteral>();
+        }
         if (check(TokenType::IDENT)) {
             std::string name = peek().lexeme;
             advance();

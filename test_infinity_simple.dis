@@ -1,0 +1,8 @@
+// Test INFINITY keyword
+print("Testing INFINITY...")
+
+if (100 < INFINITY) {
+    print("INFINITY works!")
+}
+
+print("Done.")

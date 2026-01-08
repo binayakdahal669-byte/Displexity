@@ -11,7 +11,7 @@ namespace disp {
 
 enum class TokenType {
     // Literals
-    INT, FLOAT, STRING, TRUE, FALSE,
+    INT, FLOAT, STRING, TRUE, FALSE, INFINITY,
     // Keywords
     PRINT, INPUT, IF, ELSE, WHILE, FOR, FUNC, CLASS, RETURN, INCLUDE, ARRAY,
     HTTP, KEYPRESS, HOTKEY, AI, GRAPHICS, CLEAR, DRAW, RENDER, WINDOW, FROM,
@@ -224,6 +224,10 @@ private:
         if (value == "yes") return makeToken(TokenType::TRUE, value);
         if (value == "false") return makeToken(TokenType::FALSE, value);
         if (value == "no") return makeToken(TokenType::FALSE, value);
+        if (value == "INFINITY") return makeToken(TokenType::INFINITY, value);
+        if (value == "infinity") return makeToken(TokenType::INFINITY, value);
+        if (value == "inf") return makeToken(TokenType::INFINITY, value);
+        if (value == "INF") return makeToken(TokenType::INFINITY, value);
         if (value == "Array") return makeToken(TokenType::ARRAY, value);
         if (value == "http") return makeToken(TokenType::HTTP, value);
         if (value == "web") return makeToken(TokenType::HTTP, value);

@@ -4,6 +4,9 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -DDISPLEXITY_COMPILER
 INCLUDES = -Isrc
 
+# Optional comma-separated list of .disll patterns to copy into bin/disll
+DISLLS ?=
+
 # Directories
 SRC_DIR = src
 IDE_DIR = ide
@@ -12,10 +15,11 @@ BIN_DIR = bin
 
 # Source files
 COMPILER_SOURCES = $(SRC_DIR)/main.cpp \
-                  $(SRC_DIR)/compiler/lexer.cpp \
+				  $(SRC_DIR)/compiler/lexer.cpp \
                   $(SRC_DIR)/compiler/parser.cpp \
                   $(SRC_DIR)/compiler/codegen.cpp \
                   $(SRC_DIR)/utils/logger.cpp
+				  $(SRC_DIR)/displexity_disll_loader.cpp
 
 IDE_SOURCES = $(IDE_DIR)/main.cpp
 
@@ -53,7 +57,25 @@ $(BIN_DIR):
 compiler: $(BIN_DIR) $(COMPILER_TARGET)
 
 $(COMPILER_TARGET): $(COMPILER_SOURCES)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^
+	# Copy any requested .disll libraries into bin/disll for runtime discovery
+	if [ ! -z "$(DISLLS)" ]; then \
+		echo "Linking dislls: $(DISLLS)"; \
+		python3 scripts/link_dislls.py "$(DISLLS)" || python scripts/link_dislls.py "$(DISLLS)"; \
+	fi
+	# Generate icons (logs, nvim)
+	@echo "Generating icons..."
+	@python3 scripts/generate_icons.py release/resources || python scripts/generate_icons.py release/resources || true
+
+	# Compile Windows resource (if windres is available)
+	@if command -v windres >/dev/null 2>&1; then \
+		echo "Compiling resources with windres"; \
+		windres src/disp.rc -O coff -o src/disp_res.o || true; \
+		RES_OBJ=src/disp_res.o; \
+	else \
+		RES_OBJ=; \
+	fi; \
+
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ $(RES_OBJ)
 
 # IDE
 ide: $(BIN_DIR) $(IDE_TARGET)

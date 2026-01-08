@@ -1,0 +1,36 @@
+// Displexity New Features Demo
+// Version 1.2.0-0d1
+
+// Set application icon (converts formats if needed)
+for_this_use_icon("myapp.ico");
+
+// Include TUI header for terminal UI (commented - header has declarations)
+// include "tui.tuy";
+
+// From-include syntax for selective imports
+// from "math" include sqrt, pow;
+// from <graphics> include draw_rect, fill_circle;
+
+// Main program
+print("=== Displexity New Features Demo ===\n");
+
+// Image loading (like ctx.drawImage with 9 args)
+// Syntax: draw_image(img, sx, sy, sw, sh, dx, dy, dw, dh)
+// img = load_image("sprite.bmp");
+// draw_image(img, 0, 0);                    // simple: x, y
+// draw_image(img, 10, 20, 100, 100);        // scaled: x, y, w, h
+// draw_image(img, 0, 0, 32, 32, 100, 100, 64, 64);  // 9-arg like ctx.drawImage
+
+// Sound/Audio support
+// snd = load_sound("beep.wav");
+// play_sound(snd, 0);  // play once (0 = no loop)
+// play_sound(snd, 1);  // loop
+// stop_sound(snd);
+
+print("Features in this version:");
+print("1. for_this_use_icon() - Easy app icon setting");
+print("2. from <path> include func - Selective imports");
+print("3. load_image/draw_image - Image with transforms");
+print("4. load_sound/play_sound - Audio support");
+print("5. .tuy files - TUI header support");
+print("6. Smart include resolution (.dish > .tuy > .disll)");

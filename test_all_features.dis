@@ -35,9 +35,9 @@ gl_init()
 set_projection_2d()
 
 // Simple animation loop - press ESC to close window
-for (frame = 0 to 1000) {
+for (frame = 0 to 100000000) {
     clear()
-    
+    print(frame)
     // Animate a red square moving across screen
     x_pos = 50 + (frame % 300)
     set_color(1.0, 0.0, 0.0)

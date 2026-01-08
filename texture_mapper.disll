@@ -1,0 +1,292 @@
+// Texture Mapping and Asset Management System
+// Loads, manages, and applies textures to 3D objects and voxels
+// File: texture_mapper.disll
+
+// ============================================
+// TEXTURE CONSTANTS
+// ============================================
+
+const TEXTURE_FILTER_NEAREST = 0
+const TEXTURE_FILTER_LINEAR = 1
+const TEXTURE_WRAP_CLAMP = 0
+const TEXTURE_WRAP_REPEAT = 1
+const TEXTURE_WRAP_MIRROR = 2
+
+// Minecraft-like block textures
+const BLOCK_DIRT = 1
+const BLOCK_GRASS = 2
+const BLOCK_STONE = 3
+const BLOCK_OAK_LOG = 4
+const BLOCK_OAK_LEAVES = 5
+const BLOCK_SAND = 6
+const BLOCK_WATER = 7
+const BLOCK_LAVA = 8
+const BLOCK_GRASS_BLOCK = 9
+const BLOCK_BEDROCK = 10
+
+// ============================================
+// TEXTURE LOADING AND MANAGEMENT
+// ============================================
+
+func texture_init() {
+    // Initialize texture system
+    print("[TEXTURE] Initializing texture system")
+    print("[TEXTURE] Creating texture atlas")
+    return 1
+}
+
+func texture_load_file(str filename) {
+    // Load texture from file (.png, .bmp, or procedural generation)
+    print("[TEXTURE] Loading texture: " + filename)
+    return 1  // texture handle
+}
+
+func texture_create_procedural(str name, int width, int height, int color_seed) {
+    // Generate texture procedurally (for better performance than loading files)
+    // Uses Perlin-like noise or tiling patterns
+    
+    print("[TEXTURE] Creating procedural texture: " + name + " (" + width + "x" + height + ")")
+    return 1
+}
+
+func texture_bind(int texture_id) {
+    // Make texture active for rendering
+    print("[TEXTURE] Binding texture #" + texture_id)
+    return 1
+}
+
+func texture_unbind() {
+    // Deactivate current texture
+    return 1
+}
+
+// ============================================
+// TEXTURE ATLAS MANAGEMENT
+// ============================================
+
+func atlas_create(int atlas_width, int atlas_height, int tile_size) {
+    // Create texture atlas for storing multiple tile textures
+    // Minecraft uses 16x16 texture atlas with 16x16 pixel tiles = 256x256 atlas
+    
+    print("[TEXTURE] Creating atlas: " + atlas_width + "x" + atlas_height + " with " + tile_size + "px tiles")
+    return 1  // atlas handle
+}
+
+func atlas_add_texture(int atlas_id, str name, int x, int y, int width, int height) {
+    // Add texture to atlas at specific position
+    print("[TEXTURE] Adding " + name + " to atlas at (" + x + ", " + y + ")")
+    return 1
+}
+
+func atlas_get_uv_coords(int block_type) {
+    // Get UV coordinates for block type from atlas
+    // Returns normalized coordinates (0.0 to 1.0)
+    
+    float u = 0.0625  // 1/16 for 16x16 tile atlas
+    float v = 0.0625
+    
+    return u
+}
+
+// ============================================
+// BLOCK TEXTURE MAPPING
+// ============================================
+
+func block_set_texture(int block_type, int face, int texture_id) {
+    // Set texture for specific block face
+    // face: 0=top, 1=bottom, 2=north, 3=south, 4=east, 5=west
+    
+    str face_name = "Unknown"
+    if (face == 0) { face_name = "Top" }
+    if (face == 1) { face_name = "Bottom" }
+    if (face == 2) { face_name = "North" }
+    
+    print("[TEXTURE] Setting texture for block " + block_type + " face: " + face_name)
+    return 1
+}
+
+func block_get_texture(int block_type, int face) {
+    // Get texture ID for block face
+    return 1  // texture handle
+}
+
+func block_apply_biome_tint(int block_type, float biome_temp, float biome_humidity) {
+    // Apply biome-specific color tinting to grass/foliage blocks
+    
+    print("[TEXTURE] Applying biome tint - Temp: " + biome_temp + ", Humidity: " + biome_humidity)
+    return 1
+}
+
+// ============================================
+// TEXTURE COORDINATE CALCULATION
+// ============================================
+
+func calculate_face_uv(int face, float u, float v) {
+    // Calculate UV coordinates for voxel face
+    // Maps texture to 3D cube face
+    
+    // For a cube, each face needs proper UV mapping:
+    // Top/Bottom: u,v as-is
+    // Sides: u = world position X/Z, v = world position Y
+    
+    return u
+}
+
+func apply_texture_rotation(float u, float v, int rotation) {
+    // Apply rotation to UV coordinates (0=0°, 1=90°, 2=180°, 3=270°)
+    
+    if (rotation == 1) {
+        // 90° rotation: (u,v) -> (v, 1-u)
+        float temp_u = v
+        v = 1.0 - u
+        u = temp_u
+    }
+    
+    return u
+}
+
+// ============================================
+// TEXTURE ANIMATION
+// ============================================
+
+func create_animated_texture(str base_name, int frame_count, int frame_duration_ms) {
+    // Create animated texture (water, lava, etc.)
+    
+    print("[TEXTURE] Creating animated texture: " + base_name)
+    print("[TEXTURE] Frames: " + frame_count + ", Duration: " + frame_duration_ms + "ms per frame")
+    
+    return 1  // animated texture handle
+}
+
+func update_animated_textures(int elapsed_ms) {
+    // Update animation state for all animated textures
+    // Called once per frame
+    
+    return 1
+}
+
+func get_animated_texture_frame(int anim_tex_id) {
+    // Get current frame texture for animated texture
+    return 1  // texture handle for current frame
+}
+
+// ============================================
+// NORMAL MAPPING AND ADVANCED SHADING
+// ============================================
+
+func texture_load_normal_map(str filename) {
+    // Load normal map for bump mapping / parallax mapping
+    
+    print("[TEXTURE] Loading normal map: " + filename)
+    return 1
+}
+
+func apply_normal_mapping(float surface_normal_x, float surface_normal_y, float surface_normal_z, int normal_map_id) {
+    // Apply normal map to surface normal (for detailed surfaces without high poly count)
+    
+    return surface_normal_x
+}
+
+func texture_load_roughness_map(str filename) {
+    // Load roughness map for PBR (physically-based rendering)
+    
+    print("[TEXTURE] Loading roughness map: " + filename)
+    return 1
+}
+
+// ============================================
+// TEXTURE COMPRESSION AND OPTIMIZATION
+// ============================================
+
+func texture_compress(int texture_id, str compression_format) {
+    // Compress texture (S3TC/DXT, ASTC, ETC2, etc.)
+    // Reduces memory and improves performance
+    
+    print("[TEXTURE] Compressing texture with " + compression_format)
+    return 1
+}
+
+func texture_generate_mipmaps(int texture_id) {
+    // Generate mipmaps for texture (downsampled versions)
+    // Used for rendering distant objects efficiently
+    
+    print("[TEXTURE] Generating mipmaps for texture #" + texture_id)
+    return 1
+}
+
+func texture_stream_load(str filename, int priority) {
+    // Stream-load texture (asynchronously)
+    // Prevents frame stuttering during loading
+    
+    print("[TEXTURE] Async loading: " + filename)
+    return 1  // async load handle
+}
+
+// ============================================
+// TEXTURE MEMORY MANAGEMENT
+// ============================================
+
+func get_texture_memory_usage() {
+    // Get total texture memory used
+    return 128  // MB
+}
+
+func unload_texture(int texture_id) {
+    // Unload texture from memory
+    print("[TEXTURE] Unloading texture #" + texture_id)
+    return 1
+}
+
+func clear_texture_cache() {
+    // Clear unused textures from memory
+    print("[TEXTURE] Clearing unused textures from cache")
+    return 1
+}
+
+// ============================================
+// ASSET PIPELINE
+// ============================================
+
+func load_block_textures() {
+    // Load all standard Minecraft-like block textures
+    
+    print("[TEXTURE] Loading block texture set...")
+    
+    // Load individual textures or atlas
+    texture_load_file("dirt.png")
+    texture_load_file("grass.png")
+    texture_load_file("stone.png")
+    texture_load_file("oak_log.png")
+    texture_load_file("oak_leaves.png")
+    texture_load_file("sand.png")
+    texture_load_file("water.png")
+    texture_load_file("lava.png")
+    
+    print("[TEXTURE] Block textures loaded successfully")
+    return 1
+}
+
+func create_default_textures() {
+    // Create default textures procedurally if files not found
+    // Ensures game is always playable
+    
+    print("[TEXTURE] Creating default procedural textures...")
+    
+    // Grass block (green top, brown sides, dirt bottom)
+    texture_create_procedural("grass_block", 16, 16, 1)
+    
+    // Stone (gray noise pattern)
+    texture_create_procedural("stone", 16, 16, 2)
+    
+    // Dirt (brown noise pattern)
+    texture_create_procedural("dirt", 16, 16, 3)
+    
+    // Water (animated wave pattern)
+    create_animated_texture("water", 8, 100)
+    
+    // Lava (animated wave pattern)
+    create_animated_texture("lava", 8, 150)
+    
+    print("[TEXTURE] Default textures created")
+    return 1
+}

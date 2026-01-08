@@ -19,6 +19,7 @@
 #include <ctime>
 #include <iomanip>
 #include <filesystem>
+#include "displexity_disll_loader.h"
 
 using namespace std;
 using namespace disp;
@@ -603,6 +604,13 @@ int main(int argc, char** argv) {
         cout << "Transpiled: " << cFile << " -> " << outputFile << "\n";
         return 0;
     }
+
+    // Attempt to load installed .disll libraries from bin/disll at startup
+    try {
+        displexity_load_dislls_from_bindir("bin/disll");
+    } catch (...) {
+        // non-fatal; continue without loaded .dislls
+    }
     
     string inputFile;
     vector<string> inputFiles;  // Additional input files for multi-file compilation
@@ -667,7 +675,7 @@ int main(int argc, char** argv) {
         cout << "  disp run hello.tui                     -> run TUI bytecode\n";
         cout << "  disp transpile hello.c -o hello.dis    -> C to Displexity\n";
         cout << "  disp activate                          -> add to PATH\n";
-        cout << "\nIDE: Run 'dispe' for the Neovim-based IDE\n";
+        cout << "\nIDE: Run 'dispe' for Neovim\n";
         cout << "Log file: Only generated with -emit-log flag\n";
     };
 

@@ -84,6 +84,10 @@ Section "!Compiler (Required)" SEC_COMPILER
   File "ide.ico"
   File "package.ico"
   File "runner.ico"
+  File /nonfatal "release\resources\logs.ico"
+  File /nonfatal "release\resources\nvim.ico"
+  File /nonfatal "logs.ico"
+  File /nonfatal "nvim.ico"
   File "tui.ico"
   File /nonfatal "release\resources\*.ico"
 SectionEnd
@@ -326,7 +330,7 @@ Section -Post
   ; .displog log files
   WriteRegStr HKCR ".displog" "" "Displexity.Log"
   WriteRegStr HKCR "Displexity.Log" "" "Displexity Log File"
-  WriteRegStr HKCR "Displexity.Log\DefaultIcon" "" '"$INSTDIR\resources\ide.ico"'
+  WriteRegStr HKCR "Displexity.Log\DefaultIcon" "" '"$INSTDIR\resources\logs.ico"'
   WriteRegStr HKCR "Displexity.Log\shell\open\command" "" 'notepad.exe "%1"'
   
   ; .tui TUI bytecode files
@@ -351,9 +355,9 @@ Section -Post
   CreateShortCut "$SMPROGRAMS\Displexity\Uninstall.lnk" "$INSTDIR\uninst.exe"
   CreateShortCut "$DESKTOP\Displexity.lnk" "$INSTDIR\bin\disp.exe" "" "$INSTDIR\resources\disp.ico"
   
-  ; IDE shortcut if installed - uses runner.ico for the terminal IDE
+  ; IDE shortcut if installed - use nvim icon for the GUI IDE
   IfFileExists "$INSTDIR\bin\dispe.bat" 0 +2
-  CreateShortCut "$SMPROGRAMS\Displexity\Displexity IDE.lnk" "$INSTDIR\bin\dispe.bat" "" "$INSTDIR\resources\runner.ico"
+  CreateShortCut "$SMPROGRAMS\Displexity\Displexity IDE.lnk" "$INSTDIR\bin\dispe.bat" "" "$INSTDIR\resources\nvim.ico"
 SectionEnd
 
 ;-----------------------------------------

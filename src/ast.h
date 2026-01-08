@@ -52,6 +52,11 @@ public:
     BoolLiteral(bool v) : value(v) {}
 };
 
+class InfinityLiteral : public Expr {
+public:
+    InfinityLiteral() {}
+};
+
 class ArrayLiteral : public Expr {
 public:
     std::vector<ExprPtr> elements;

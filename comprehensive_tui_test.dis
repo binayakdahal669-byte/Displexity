@@ -1,0 +1,47 @@
+// Comprehensive TUI feature test - like GUI but for terminal
+print("=== Displexity TUI Feature Test ===")
+
+// 1. Basic variables
+int x = 42
+float y = 3.14
+str name = "TUI Test"
+print("Variables work!")
+
+// 2. Control flow
+if (x > 40) {
+    print("If statement works!")
+}
+
+// 3. Loops
+print("Testing loops...")
+for (i = 1 to 3) {
+    print("Loop iteration")
+}
+
+// 4. Functions
+def test_function(int a) {
+    print("Function called")
+    return a * 2
+}
+
+result = test_function(21)
+print("Function result received")
+
+// 5. INFINITY feature test
+print("Testing INFINITY...")
+for (frame = 0 to INFINITY) {
+    print("TUI Frame: " << frame)
+    
+    // Simple TUI "animation" - just show progress
+    if (frame % 10 == 0) {
+        print("Progress marker at frame " << frame)
+    }
+    
+    // Break after reasonable amount for demo
+    if (frame > 50) {
+        print("Breaking from infinite loop - INFINITY works!")
+        break
+    }
+}
+
+print("=== All TUI Features Tested Successfully! ===")

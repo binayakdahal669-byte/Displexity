@@ -373,6 +373,11 @@ private:
             emit(TuiOpcode::PUSH_BOOL);
             emitByte(boolLit->value ? 1 : 0);
         }
+        else if (auto infLit = std::dynamic_pointer_cast<InfinityLiteral>(expr)) {
+            // Push a very large integer to represent infinity
+            emit(TuiOpcode::PUSH_INT);
+            emitInt32(2147483647); // Max 32-bit signed integer
+        }
         else if (auto varRef = std::dynamic_pointer_cast<Variable>(expr)) {
             auto it = variableSlots.find(varRef->name);
             if (it != variableSlots.end()) {
@@ -424,6 +429,51 @@ private:
                 emit(TuiOpcode::GET_KEY);
             } else if (funcCall->name == "sleep") {
                 emit(TuiOpcode::SLEEP);
+            } else if (funcCall->name == "enhanced_tui_init") {
+                // Enhanced TUI initialization - store parameters
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("enhanced_init"));
+            } else if (funcCall->name == "enhanced_clear") {
+                emit(TuiOpcode::CLEAR);
+            } else if (funcCall->name == "enhanced_present") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("enhanced_present"));
+            } else if (funcCall->name == "maintain_frame_rate") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("maintain_fps"));
+            } else if (funcCall->name == "load_texture") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("load_tex"));
+            } else if (funcCall->name == "load_sound_dish" || funcCall->name == "load_sound_disll") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("load_sound"));
+            } else if (funcCall->name == "play_sound") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("play_sound"));
+            } else if (funcCall->name == "generate_voxel_chunk") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("gen_chunk"));
+            } else if (funcCall->name == "enhanced_render_textured" || funcCall->name == "enhanced_render_raytraced") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("render_3d"));
+            } else if (funcCall->name == "enhanced_draw_text") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("draw_text"));
+            } else if (funcCall->name == "enhanced_draw_box") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("draw_box"));
+            } else if (funcCall->name == "set_camera_pos" || funcCall->name == "set_camera_rotation") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("camera"));
+            } else if (funcCall->name == "mat4_projection" || funcCall->name == "mat4_identity") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("matrix"));
+            } else if (funcCall->name == "get_time_ms") {
+                emit(TuiOpcode::PUSH_INT);
+                emitInt32((int)(time(nullptr) * 1000));
+            } else if (funcCall->name == "toggle_raytracing") {
+                emit(TuiOpcode::PUSH_STR);
+                emitUint32(addString("toggle_rt"));
             } else {
                 // User function call
                 auto it = functionOffsets.find(funcCall->name);

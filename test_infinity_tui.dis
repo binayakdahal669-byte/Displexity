@@ -1,0 +1,37 @@
+// TUI INFINITY Test
+print("=== INFINITY TUI Test ===")
+
+// Test INFINITY in comparisons
+if (100 < INFINITY) {
+    print("✓ 100 < INFINITY works")
+}
+
+if (INFINITY > 1000000) {
+    print("✓ INFINITY > 1,000,000 works")
+}
+
+// Test INFINITY aliases
+print("Testing INFINITY aliases:")
+if (42 < infinity) {
+    print("✓ lowercase infinity works")
+}
+
+if (INF > 999) {
+    print("✓ INF works")
+}
+
+if (inf > 999) {
+    print("✓ inf works")
+}
+
+// Test INFINITY in loops (with break to avoid infinite loop)
+print("Testing INFINITY in loops:")
+for (frame = 0 to INFINITY) {
+    print("Frame: " << frame)
+    if (frame > 3) {
+        print("Breaking from infinite loop")
+        break
+    }
+}
+
+print("=== INFINITY TUI Test Complete ===")
