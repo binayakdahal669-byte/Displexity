@@ -569,8 +569,8 @@ int main(int argc, char** argv) {
             namespace fs = std::filesystem;
             string ext = fs::path(runFile).extension().string();
             
-            // Handle .tui files with TUI runtime
-            if (ext == ".tui") {
+            // Handle .tui and .tuy files with TUI runtime
+            if (ext == ".tui" || ext == ".tuy") {
                 return TuiRuntime::runFile(runFile);
             }
             
@@ -608,10 +608,10 @@ int main(int argc, char** argv) {
     vector<string> inputFiles;  // Additional input files for multi-file compilation
     vector<string> linkLibraries;  // Libraries to link (-l flag)
     string outputFile;
-    string emitMode = "c";  // c, asm, exe, disp, bare-asm
+    string emitMode = "disp";  // Default to .disp package (was "c")
     bool verbose = false;
     string logFileOverride;
-    bool noLog = false;  // -no-log flag
+    bool emitLog = false;  // Only emit log when -emit-log is used (was noLog = false)
 
     auto printHelp = [&]() {
         cout << "disp - Displexity Language Compiler v1.2.0-0d1\n\n";
@@ -621,7 +621,7 @@ int main(int argc, char** argv) {
         cout << "  -emit-c                Emit C source only (do not compile)\n";
         cout << "  -emit-exe              Emit native executable (auto-compiles via GCC)\n";
         cout << "  -emit-disp             Emit .disp package (bundled executable) [DEFAULT]\n";
-        cout << "  -emit-tui              Emit TUI bytecode executable (.tui)\n";
+        cout << "  -emit-tui/-emit-tuy    Emit TUI bytecode executable (.tui/.tuy)\n";
         cout << "  -emit-asm              Emit x86-64 assembly\n";
         cout << "  -bare-asm              Emit bare-metal x86 assembly for BIOS/boot\n";
         cout << "  -emit-arm              Emit ARM64 (aarch64) assembly\n";
@@ -639,13 +639,13 @@ int main(int argc, char** argv) {
         cout << "\nOther Options:\n";
         cout << "  -l<lib.disll>          Link a library file\n";
         cout << "  --log <file>           Write compilation log to given file\n";
-        cout << "  -no-log                Disable log file generation\n";
+        cout << "  -emit-log              Enable log file generation (disabled by default)\n";
         cout << "  --verbose              Increase output verbosity\n";
         cout << "\nSpecial Commands:\n";
         cout << "  disp activate          Add disp to PATH and enable auto-startup\n";
         cout << "  disp config [key val]  Get/set configuration (e.g., search paths)\n";
         cout << "  disp run file.disp     Extract and execute a .disp package\n";
-        cout << "  disp run file.tui      Execute a TUI bytecode file\n";
+        cout << "  disp run file.tui      Execute a TUI bytecode file (.tui or .tuy)\n";
         cout << "  disp transpile file.c  Convert C source to Displexity\n";
         cout << "  disp --help            Show this help\n";
         cout << "  disp --version         Show version\n";
@@ -657,17 +657,18 @@ int main(int argc, char** argv) {
         cout << "  .tui                   TUI bytecode executable (cross-platform)\n";
         cout << "  .tuy                   TUI header file\n";
         cout << "\nExamples:\n";
-        cout << "  disp hello.dis                         -> hello.disp (default)\n";
+        cout << "  disp hello.dis                         -> hello.disp (default, no .c or .log)\n";
         cout << "  disp hello.dis -emit-exe               -> hello.exe\n";
         cout << "  disp hello.dis -emit-tui               -> hello.tui\n";
-        cout << "  disp hello.dis -emit-c -o hello.c      -> hello.c (C only)\n";
+        cout << "  disp hello.dis -emit-c -o hello.c      -> hello.c (C source only)\n";
+        cout << "  disp hello.dis -emit-log               -> hello.disp + log file\n";
         cout << "  disp main.dis lib.dis -o app.disp      -> multi-file compilation\n";
         cout << "  disp run hello.disp                    -> extract and run\n";
         cout << "  disp run hello.tui                     -> run TUI bytecode\n";
         cout << "  disp transpile hello.c -o hello.dis    -> C to Displexity\n";
         cout << "  disp activate                          -> add to PATH\n";
         cout << "\nIDE: Run 'dispe' for the Neovim-based IDE\n";
-        cout << "Log file: log.<basename>.displog (or use --log)\n";
+        cout << "Log file: Only generated with -emit-log flag\n";
     };
 
     for (int i = 1; i < argc; i++) {
@@ -690,11 +691,12 @@ int main(int argc, char** argv) {
 
         if (arg == "--log" && i + 1 < argc) {
             logFileOverride = argv[++i];
+            emitLog = true;  // --log implies emit log
             continue;
         }
         
-        if (arg == "-no-log" || arg == "--no-log") {
-            noLog = true;
+        if (arg == "-emit-log" || arg == "--emit-log") {
+            emitLog = true;
             continue;
         }
 
@@ -707,7 +709,7 @@ int main(int argc, char** argv) {
         if (arg == "-emit-asm") { emitMode = "asm"; continue; }
         if (arg == "-emit-exe") { emitMode = "exe"; continue; }
         if (arg == "-emit-disp") { emitMode = "disp"; continue; }
-        if (arg == "-emit-tui") { emitMode = "tui"; continue; }
+        if (arg == "-emit-tui" || arg == "-emit-tuy") { emitMode = "tui"; continue; }
         if (arg == "-bare-asm") { emitMode = "bare-asm"; continue; }
         if (arg == "-emit-arm") { emitMode = "arm"; continue; }
         if (arg == "-emit-riscv") { emitMode = "riscv"; continue; }
@@ -757,16 +759,18 @@ int main(int argc, char** argv) {
     ifstream infile(inputFile);
     if (!infile) {
         cerr << "Error: Cannot open file: " << inputFile << "\n";
-        string base = removeExtension(basename(inputFile));
-        string logFile = logFileOverride.empty() ? ("log." + base + ".displog") : logFileOverride;
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            logfile << "Input: " << inputFile << "\n";
-            logfile << "Status: Error\n";
-            logfile << "Error: Cannot open input file.\n";
-            logfile.close();
-            cerr << "Log: " << logFile << "\n";
+        if (emitLog) {
+            string base = removeExtension(basename(inputFile));
+            string logFile = logFileOverride.empty() ? ("log." + base + ".displog") : logFileOverride;
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                logfile << "Input: " << inputFile << "\n";
+                logfile << "Status: Error\n";
+                logfile << "Error: Cannot open input file.\n";
+                logfile.close();
+                cerr << "Log: " << logFile << "\n";
+            }
         }
         return 1;
     }
@@ -1103,14 +1107,16 @@ int main(int argc, char** argv) {
     }
 
     if (failed) {
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile << "Status: Error\n";
-            logfile << "Error: " << errorMessage << "\n";
-            logfile.close();
-            cerr << "Log: " << logFile << "\n";
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile << "Status: Error\n";
+                logfile << "Error: " << errorMessage << "\n";
+                logfile.close();
+                cerr << "Log: " << logFile << "\n";
+            }
         }
         return 1;
     }
@@ -1125,13 +1131,15 @@ int main(int argc, char** argv) {
         if (!outfile) {
             cerr << "Error: Cannot write asm file: " << outputFile << "\n";
             addLog(string("Error: Cannot write asm file: ") + outputFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write asm file.\n";
-                logfile.close();
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write asm file.\n";
+                    logfile.close();
+                }
             }
             return 1;
         }
@@ -1141,11 +1149,13 @@ int main(int argc, char** argv) {
         cout << "ASM emitted: " << outputFile << "\n";
         // finalize log and exit
         addLog(string("Status: Success"));
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile.close();
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
         }
         return 0;
     } else if (emitMode == "bare-asm") {
@@ -1156,13 +1166,15 @@ int main(int argc, char** argv) {
         if (!outfile) {
             cerr << "Error: Cannot write asm file: " << outputFile << "\n";
             addLog(string("Error: Cannot write asm file: ") + outputFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write asm file.\n";
-                logfile.close();
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write asm file.\n";
+                    logfile.close();
+                }
             }
             return 1;
         }
@@ -1173,11 +1185,13 @@ int main(int argc, char** argv) {
         cout << "Assemble with: nasm -f bin " << outputFile << " -o " << removeExtension(outputFile) << ".bin\n";
         // finalize log and exit
         addLog(string("Status: Success"));
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile.close();
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
         }
         return 0;
     } else if (emitMode == "arm") {
@@ -1188,13 +1202,15 @@ int main(int argc, char** argv) {
         if (!outfile) {
             cerr << "Error: Cannot write asm file: " << outputFile << "\n";
             addLog(string("Error: Cannot write asm file: ") + outputFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write asm file.\n";
-                logfile.close();
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write asm file.\n";
+                    logfile.close();
+                }
             }
             return 1;
         }
@@ -1205,11 +1221,13 @@ int main(int argc, char** argv) {
         cout << "Assemble with: aarch64-linux-gnu-as " << outputFile << " -o " << removeExtension(outputFile) << ".o\n";
         // finalize log and exit
         addLog(string("Status: Success"));
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile.close();
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
         }
         return 0;
     } else if (emitMode == "riscv") {
@@ -1220,13 +1238,15 @@ int main(int argc, char** argv) {
         if (!outfile) {
             cerr << "Error: Cannot write asm file: " << outputFile << "\n";
             addLog(string("Error: Cannot write asm file: ") + outputFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write asm file.\n";
-                logfile.close();
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write asm file.\n";
+                    logfile.close();
+                }
             }
             return 1;
         }
@@ -1237,11 +1257,13 @@ int main(int argc, char** argv) {
         cout << "Assemble with: riscv64-unknown-elf-as " << outputFile << " -o " << removeExtension(outputFile) << ".o\n";
         // finalize log and exit
         addLog(string("Status: Success"));
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile.close();
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
         }
         return 0;
     } else if (emitMode == "wasm") {
@@ -1252,13 +1274,15 @@ int main(int argc, char** argv) {
         if (!outfile) {
             cerr << "Error: Cannot write wat file: " << outputFile << "\n";
             addLog(string("Error: Cannot write wat file: ") + outputFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write wat file.\n";
-                logfile.close();
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write wat file.\n";
+                    logfile.close();
+                }
             }
             return 1;
         }
@@ -1270,11 +1294,13 @@ int main(int argc, char** argv) {
         cout << "Run with: wasmtime " << removeExtension(outputFile) << ".wasm\n";
         // finalize log and exit
         addLog(string("Status: Success"));
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile.close();
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
         }
         return 0;
     } else if (emitMode == "tui") {
@@ -1287,13 +1313,15 @@ int main(int argc, char** argv) {
         if (!outfile) {
             cerr << "Error: Cannot write TUI file: " << outputFile << "\n";
             addLog(string("Error: Cannot write TUI file: ") + outputFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write TUI file.\n";
-                logfile.close();
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write TUI file.\n";
+                    logfile.close();
+                }
             }
             return 1;
         }
@@ -1304,11 +1332,13 @@ int main(int argc, char** argv) {
         cout << "Run with: disp run " << outputFile << "\n";
         // finalize log and exit
         addLog(string("Status: Success"));
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile.close();
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
         }
         return 0;
     } else if (emitMode == "lib") {
@@ -1348,11 +1378,13 @@ int main(int argc, char** argv) {
         
         // finalize log and exit
         addLog(string("Status: Success"));
-        ofstream logfile(logFile);
-        if (logfile) {
-            logfile << "=== Displexity Compilation Log ===\n";
-            for (auto &l : logLines) logfile << l << "\n";
-            logfile.close();
+        if (emitLog) {
+            ofstream logfile(logFile);
+            if (logfile) {
+                logfile << "=== Displexity Compilation Log ===\n";
+                for (auto &l : logLines) logfile << l << "\n";
+                logfile.close();
+            }
         }
         return 0;
     }
@@ -1420,7 +1452,7 @@ int main(int argc, char** argv) {
         
         addLog(string("Cross-compile succeeded: ") + outputFile);
         addLog(string("Status: Success"));
-        if (!noLog) {
+        if (emitLog) {
             ofstream logfile(logFile);
             if (logfile) {
                 logfile << "=== Displexity Compilation Log ===\n";
@@ -1479,13 +1511,15 @@ int main(int argc, char** argv) {
         if (!tempfile) {
             cerr << "Error: Cannot write temp file: " << tempCFile << "\n";
             addLog(string("Error: Cannot write temp C file: ") + tempCFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write temp C file.\n";
-                logfile.close();
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write temp C file.\n";
+                    logfile.close();
+                }
             }
             return 1;
         }
@@ -1498,14 +1532,16 @@ int main(int argc, char** argv) {
         if (!outfile) {
             cerr << "Error: Cannot write to file: " << outputFile << "\n";
             addLog(string("Error: Cannot write output file: ") + outputFile);
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: Cannot write output file.\n";
-                logfile.close();
-                cerr << "Log: " << logFile << "\n";
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: Cannot write output file.\n";
+                    logfile.close();
+                    cerr << "Log: " << logFile << "\n";
+                }
             }
             return 1;
         }
@@ -1629,14 +1665,16 @@ int main(int argc, char** argv) {
         if (gccResult != 0) {
             cerr << "Error: GCC compilation failed with code " << gccResult << "\n";
             addLog(string("GCC failed with code: ") + to_string(gccResult));
-            ofstream logfile(logFile);
-            if (logfile) {
-                logfile << "=== Displexity Compilation Log ===\n";
-                for (auto &l : logLines) logfile << l << "\n";
-                logfile << "Status: Error\n";
-                logfile << "Error: GCC compilation failed.\n";
-                logfile.close();
-                cerr << "Log: " << logFile << "\n";
+            if (emitLog) {
+                ofstream logfile(logFile);
+                if (logfile) {
+                    logfile << "=== Displexity Compilation Log ===\n";
+                    for (auto &l : logLines) logfile << l << "\n";
+                    logfile << "Status: Error\n";
+                    logfile << "Error: GCC compilation failed.\n";
+                    logfile.close();
+                    cerr << "Log: " << logFile << "\n";
+                }
             }
             return 1;
         }
@@ -1658,19 +1696,20 @@ int main(int argc, char** argv) {
             try {
                 DispPackage::create(exeName, outputFile);
                 addLog(string("Created .disp package: ") + outputFile);
+                // Clean up the intermediate .exe file when creating .disp
+                try { fs::remove(exeName); } catch (...) {}
             } catch (const exception &e) {
                 cerr << "Error: Cannot create .disp package: " << e.what() << "\n";
                 addLog(string("Error creating .disp: ") + e.what());
             }
         }
         
-        cout << "Compiled: " << inputFile << " -> " << exeName << "\n";
-        if (createDispPackage) cout << "Package: " << outputFile << "\n";
+        cout << "Compiled: " << inputFile << " -> " << (createDispPackage ? outputFile : exeName) << "\n";
     }
 
     // Finalize log with success
     addLog(string("Status: Success"));
-    if (!noLog) {
+    if (emitLog) {
         ofstream logfile(logFile);
         if (logfile) {
             logfile << "=== Displexity Compilation Log ===\n";

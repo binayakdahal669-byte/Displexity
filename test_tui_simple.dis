@@ -1,0 +1,4 @@
+// Simple TUI test
+print("Hello TUI!")
+print("This should work now")
+print("No more infinite loops!")

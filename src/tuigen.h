@@ -426,14 +426,20 @@ private:
                 emit(TuiOpcode::SLEEP);
             } else {
                 // User function call
-                emit(TuiOpcode::CALL);
                 auto it = functionOffsets.find(funcCall->name);
-                if (it != functionOffsets.end()) {
+                if (it != functionOffsets.end() && it->second != 0) {
+                    emit(TuiOpcode::CALL);
                     emitUint32(it->second);
+                    emitByte(funcCall->args.size());
                 } else {
-                    emitUint32(0); // Unknown function
+                    // Unknown function - just push a dummy value and pop args
+                    // This prevents infinite loops from calling offset 0
+                    for (size_t i = 0; i < funcCall->args.size(); i++) {
+                        emit(TuiOpcode::POP); // Pop the arguments we pushed
+                    }
+                    emit(TuiOpcode::PUSH_STR);
+                    emitUint32(addString("[undefined:" + funcCall->name + "]"));
                 }
-                emitByte(funcCall->args.size());
             }
         }
     }

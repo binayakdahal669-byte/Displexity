@@ -11,6 +11,10 @@ SetCompressor /SOLID lzma
 Unicode true
 !include "MUI2.nsh"
 !include "FileFunc.nsh"
+!include "LogicLib.nsh"
+
+; Include language installer integration
+!include "disp_programs\languages.nsh"
 
 ; Custom icons
 !define MUI_ICON "exe.ico"
@@ -46,6 +50,13 @@ VIAddVersionKey "FileDescription" "Displexity Programming Language Installer"
 VIAddVersionKey "FileVersion" "${PRODUCT_VERSION}"
 
 ;-----------------------------------------
+; INIT FUNCTION: Detect installed languages
+;-----------------------------------------
+Function .onInit
+  Call DetectLanguages
+FunctionEnd
+
+;-----------------------------------------
 ; SECTION: Core Compiler
 ;-----------------------------------------
 Section "!Compiler (Required)" SEC_COMPILER
@@ -73,6 +84,7 @@ Section "!Compiler (Required)" SEC_COMPILER
   File "ide.ico"
   File "package.ico"
   File "runner.ico"
+  File "tui.ico"
   File /nonfatal "release\resources\*.ico"
 SectionEnd
 
@@ -320,17 +332,13 @@ Section -Post
   ; .tui TUI bytecode files
   WriteRegStr HKCR ".tui" "" "Displexity.TUI"
   WriteRegStr HKCR "Displexity.TUI" "" "Displexity TUI Executable"
-  WriteRegStr HKCR "Displexity.TUI\DefaultIcon" "" '"$INSTDIR\resources\runner.ico"'
+  WriteRegStr HKCR "Displexity.TUI\DefaultIcon" "" '"$INSTDIR\resources\tui.ico"'
   WriteRegStr HKCR "Displexity.TUI\shell" "" "open"
   WriteRegStr HKCR "Displexity.TUI\shell\open" "" "Run"
   WriteRegStr HKCR "Displexity.TUI\shell\open\command" "" '"$INSTDIR\bin\disp.exe" run "%1"'
   
-  ; .tuy TUI header files
-  WriteRegStr HKCR ".tuy" "" "Displexity.TUIHeader"
-  WriteRegStr HKCR "Displexity.TUIHeader" "" "Displexity TUI Header File"
-  WriteRegStr HKCR "Displexity.TUIHeader\DefaultIcon" "" '"$INSTDIR\resources\disp.ico"'
-  WriteRegStr HKCR "Displexity.TUIHeader\shell\edit" "" "Edit"
-  WriteRegStr HKCR "Displexity.TUIHeader\shell\edit\command" "" 'notepad.exe "%1"'
+  ; .tuy TUI bytecode files (alias for .tui)
+  WriteRegStr HKCR ".tuy" "" "Displexity.TUI"
   
   ; Refresh icon cache
   System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
@@ -443,7 +451,6 @@ Section Uninstall
   DeleteRegKey HKCR "Displexity.Package"
   DeleteRegKey HKCR "Displexity.Log"
   DeleteRegKey HKCR "Displexity.TUI"
-  DeleteRegKey HKCR "Displexity.TUIHeader"
   
   ; Refresh icon cache
   System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'

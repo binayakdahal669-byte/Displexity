@@ -1,0 +1,8 @@
+=== Displexity Compilation Log ===
+Timestamp: 2026-01-08 02:13:40
+Input: test_tui_simple.dis
+Output: test_simple.tui
+Mode: tui
+Tokens: 13
+TUI bytecode emitted: test_simple.tui
+Status: Success

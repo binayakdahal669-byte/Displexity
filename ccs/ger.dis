@@ -1,0 +1,2 @@
+float xt9 = 99.99
+print("hello gigalo" << "\n gigallo 2.0\n" << xt9 << "gigallo 3.0")

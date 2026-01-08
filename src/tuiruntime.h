@@ -131,9 +131,23 @@ private:
     // Terminal functions
     void clearScreen() {
 #ifdef _WIN32
-        system("cls");
+        // Use console API for flicker-free clearing
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        DWORD count;
+        DWORD cellCount;
+        COORD homeCoords = {0, 0};
+        
+        if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
+            cellCount = csbi.dwSize.X * csbi.dwSize.Y;
+            FillConsoleOutputCharacter(hConsole, ' ', cellCount, homeCoords, &count);
+            FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count);
+            SetConsoleCursorPosition(hConsole, homeCoords);
+        }
 #else
+        // Use ANSI escape codes for flicker-free clearing
         std::cout << "\033[2J\033[H";
+        std::cout.flush();
 #endif
     }
     
@@ -254,6 +268,15 @@ public:
         ip = entryPoint;
         running = true;
         locals.resize(256); // Pre-allocate local variables
+        
+        // Debug: Show entry point and bytecode size
+        // std::cerr << "[TUI Debug] Entry point: " << entryPoint << ", Bytecode size: " << bytecode.size() << "\n";
+        
+        // Safety: Ensure entry point is valid
+        if (entryPoint >= bytecode.size()) {
+            std::cerr << "Error: Invalid entry point " << entryPoint << " (bytecode size: " << bytecode.size() << ")\n";
+            return 1;
+        }
         
         while (running && ip < bytecode.size()) {
             TuiOpcode op = static_cast<TuiOpcode>(readByte());
@@ -576,6 +599,46 @@ public:
         return 0;
     }
     
+    // Initialize terminal for TUI mode (hide cursor, set raw mode)
+    void initTerminal() {
+#ifdef _WIN32
+        // Hide cursor
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_CURSOR_INFO cursorInfo;
+        GetConsoleCursorInfo(hConsole, &cursorInfo);
+        cursorInfo.bVisible = FALSE;
+        SetConsoleCursorInfo(hConsole, &cursorInfo);
+        
+        // Enable virtual terminal processing for ANSI codes
+        DWORD mode;
+        GetConsoleMode(hConsole, &mode);
+        SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+#else
+        // Hide cursor using ANSI
+        std::cout << "\033[?25l";
+        std::cout.flush();
+#endif
+    }
+    
+    // Restore terminal to normal mode
+    void cleanupTerminal() {
+#ifdef _WIN32
+        // Show cursor
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_CURSOR_INFO cursorInfo;
+        GetConsoleCursorInfo(hConsole, &cursorInfo);
+        cursorInfo.bVisible = TRUE;
+        SetConsoleCursorInfo(hConsole, &cursorInfo);
+        
+        // Reset color
+        SetConsoleTextAttribute(hConsole, 7);
+#else
+        // Show cursor and reset color
+        std::cout << "\033[?25h\033[0m";
+        std::cout.flush();
+#endif
+    }
+    
     // Load and run from file
     static int runFile(const std::string& path) {
         std::ifstream file(path, std::ios::binary);
@@ -593,7 +656,15 @@ public:
             return 1;
         }
         
-        return runtime.run();
+        // Initialize terminal for TUI mode
+        runtime.initTerminal();
+        
+        int result = runtime.run();
+        
+        // Cleanup terminal
+        runtime.cleanupTerminal();
+        
+        return result;
     }
 };
 

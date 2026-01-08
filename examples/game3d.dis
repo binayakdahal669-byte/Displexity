@@ -1,0 +1,155 @@
+// Displexity 3D Game Demo
+// Compile: disp game3d.dis -o game3d.exe
+// Or TUI:  disp game3d.dis -o game3d.tui --emit-tui
+
+// Key constants
+const KEY_UP = 256
+const KEY_DOWN = 257
+const KEY_LEFT = 258
+const KEY_RIGHT = 259
+const KEY_ESC = 27
+
+// Camera state
+var camX = 0.0
+var camY = 0.0
+var camZ = -5.0
+var camYaw = 0.0
+var camPitch = 0.0
+
+// Object rotation
+var cubeAngle = 0.0
+var pyramidAngle = 0.0
+
+// Movement speed
+const MOVE_SPEED = 0.15
+const ROTATE_SPEED = 0.1
+
+func handleInput(key: int) {
+    // Calculate forward direction
+    var fwdX = sin(camYaw) * MOVE_SPEED
+    var fwdZ = cos(camYaw) * MOVE_SPEED
+    
+    // Movement
+    if key is 'w' {
+        camX = camX + fwdX
+        camZ = camZ + fwdZ
+    }
+    if key is 's' {
+        camX = camX - fwdX
+        camZ = camZ - fwdZ
+    }
+    if key is 'a' {
+        camX = camX - fwdZ
+        camZ = camZ + fwdX
+    }
+    if key is 'd' {
+        camX = camX + fwdZ
+        camZ = camZ - fwdX
+    }
+    if key is 'e' {
+        camY = camY + MOVE_SPEED
+    }
+    if key is 'r' {
+        camY = camY - MOVE_SPEED
+    }
+    
+    // Rotation
+    if key is KEY_LEFT {
+        camYaw = camYaw - ROTATE_SPEED
+    }
+    if key is KEY_RIGHT {
+        camYaw = camYaw + ROTATE_SPEED
+    }
+    if key is KEY_UP {
+        camPitch = camPitch - ROTATE_SPEED
+    }
+    if key is KEY_DOWN {
+        camPitch = camPitch + ROTATE_SPEED
+    }
+    
+    // Clamp pitch
+    if camPitch > 1.5 {
+        camPitch = 1.5
+    }
+    if camPitch < -1.5 {
+        camPitch = -1.5
+    }
+}
+
+func main() {
+    // Initialize renderer (80x24 for TUI)
+    tui_init(80, 24)
+    
+    // Create meshes
+    var cube = mesh_cube()
+    var pyramid = mesh_pyramid()
+    
+    // Projection matrix
+    var proj = mat4_projection(90.0, 0.6, 0.1, 1000.0)
+    
+    var running = true
+    
+    while running {
+        // Get input
+        var key = get_key()
+        
+        if key is KEY_ESC or key is 'q' {
+            running = false
+        } else {
+            handleInput(key)
+        }
+        
+        // Clear screen
+        tui_clear()
+        
+        // Build camera view matrix
+        var camRotY = mat4_rotY(-camYaw)
+        var camRotX = mat4_rotX(-camPitch)
+        var camTrans = mat4_trans(-camX, -camY, -camZ)
+        var view = mat4_mul(camTrans, camRotY)
+        view = mat4_mul(view, camRotX)
+        
+        // Render cube
+        var cubeRotX = mat4_rotX(cubeAngle * 0.5)
+        var cubeRotY = mat4_rotY(cubeAngle)
+        var cubeTrans = mat4_trans(-0.5, -0.5, 3.0)
+        var cubeWorld = mat4_mul(cubeRotX, cubeRotY)
+        cubeWorld = mat4_mul(cubeWorld, cubeTrans)
+        cubeWorld = mat4_mul(cubeWorld, view)
+        tui_render(cube, cubeWorld, proj)
+        
+        // Render pyramid
+        var pyrRotY = mat4_rotY(-pyramidAngle)
+        var pyrTrans = mat4_trans(2.0, -0.5, 5.0)
+        var pyrWorld = mat4_mul(pyrRotY, pyrTrans)
+        pyrWorld = mat4_mul(pyrWorld, view)
+        tui_render(pyramid, pyrWorld, proj)
+        
+        // Render second cube
+        var cube2Trans = mat4_trans(-3.0, 0.0, 6.0)
+        var cube2RotY = mat4_rotY(cubeAngle * 0.7)
+        var cube2World = mat4_mul(cube2RotY, cube2Trans)
+        cube2World = mat4_mul(cube2World, view)
+        tui_render(cube, cube2World, proj)
+        
+        // Draw HUD
+        tui_text(1, 0, "Displexity 3D Demo", 15)
+        tui_text(1, 1, "Pos: " + str(camX) + "," + str(camY) + "," + str(camZ), 7)
+        tui_text(1, 23, "WASD=Move ER=Up/Down Arrows=Look Q=Quit", 8)
+        
+        // Present frame
+        tui_present()
+        
+        // Update rotation
+        cubeAngle = cubeAngle + 0.03
+        pyramidAngle = pyramidAngle + 0.02
+        
+        // Frame delay
+        sleep(16)
+    }
+    
+    // Cleanup
+    tui_cleanup()
+}
+
+main()

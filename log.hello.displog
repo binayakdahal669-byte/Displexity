@@ -1,11 +1,8 @@
 === Displexity Compilation Log ===
-Timestamp: 2026-01-02 17:43:49
-Input: release\examples\hello.dis
-Output: release\test_packaged.exe
-Mode: c
-Tokens: 5
-Temp C file: release\test_packaged_temp.c
-Using default exe.ico for executable icon
-Icon resource compiled successfully
-GCC succeeded: release\test_packaged.exe
+Timestamp: 2026-01-08 01:51:22
+Input: examples\hello.dis
+Output: test2.tuy
+Mode: tui
+Tokens: 21
+TUI bytecode emitted: test2.tuy
 Status: Success
